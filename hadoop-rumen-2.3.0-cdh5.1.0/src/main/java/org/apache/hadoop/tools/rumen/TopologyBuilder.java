@@ -118,7 +118,6 @@ public class TopologyBuilder {
 
   private void recordParsedHost(String nodeName) {
     ParsedHost result = ParsedHost.parse(nodeName);
-
     if (result != null && !allHosts.contains(result)) {
       allHosts.add(result);
     }
@@ -130,7 +129,6 @@ public class TopologyBuilder {
 
       while (tok.hasMoreTokens()) {
         String nextSplit = tok.nextToken();
-
         recordParsedHost(nextSplit);
       }
     }

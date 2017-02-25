@@ -38,6 +38,8 @@ public class ParsedTaskAttempt extends LoggedTaskAttempt {
   private String trackerName;
   private Integer httpPort, shufflePort;
   private Map<String, Long> countersMap = new HashMap<String, Long>();
+  private String originalLocality ="";
+  private String fileSplitName = "";
 
   ParsedTaskAttempt() {
     super();
@@ -116,4 +118,20 @@ public class ParsedTaskAttempt extends LoggedTaskAttempt {
         + obtainShufflePort() + ";rack=" + getHostName().getRackName()
         + ";host=" + getHostName().getHostName());
   }
+
+public String getOriginalLocality() {
+	return originalLocality;
+}
+
+public void setOriginalLocality(String originalLocality) {
+	this.originalLocality = originalLocality;
+}
+
+public String getFileSplitName() {
+	return fileSplitName;
+}
+
+public void setFileSplitName(String fileSplitName) {
+	this.fileSplitName = fileSplitName;
+}
 }

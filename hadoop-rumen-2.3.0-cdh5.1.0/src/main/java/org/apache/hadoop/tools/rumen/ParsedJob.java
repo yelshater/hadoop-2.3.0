@@ -45,6 +45,11 @@ public class ParsedJob extends LoggedJob {
 
   private String jobConfPath;
   private Map<JobACL, AccessControlList> jobAcls;
+  
+  /***added by @author Yehia*********/
+  private List<String> inputFileNames ;
+  private String amMasterNode; 
+  /***@author Yehia*********/
 
   ParsedJob() {
 
@@ -176,4 +181,20 @@ public class ParsedJob extends LoggedJob {
       task.dumpParsedTask();
     }
   }
+
+public List<String> getInputFileNames() {
+	return inputFileNames;
+}
+
+public void setInputFileNames(List<String> inputFileNames) {
+	this.inputFileNames = inputFileNames;
+}
+
+public String getAmMasterNode() {
+	return amMasterNode;
+}
+
+public void setAmMasterNode(String amMasterNode) {
+	this.amMasterNode = amMasterNode;
+}
 }

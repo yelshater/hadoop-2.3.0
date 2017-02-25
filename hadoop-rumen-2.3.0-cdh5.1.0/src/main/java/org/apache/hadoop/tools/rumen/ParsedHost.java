@@ -19,10 +19,12 @@ package org.apache.hadoop.tools.rumen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.hadoop.tools.rumen.datatypes.NodeName;
+
+import util.NetworkTopologyUtil;
 
 public class ParsedHost {
   private final String rackName;
@@ -65,12 +67,12 @@ public class ParsedHost {
     // separate out the node name
     Matcher matcher = splitPattern.matcher(name);
 
-    if (!matcher.matches())
-      return null;
-
-    return new ParsedHost(matcher.group(1), matcher.group(2));
+   /* if (!matcher.matches())
+      return null;  */
+    NetworkTopologyUtil.init();
+    return new ParsedHost(NetworkTopologyUtil.getRackName(name), name);
   }
-
+  
   private String process(String name) {
     return name == null 
            ? null 

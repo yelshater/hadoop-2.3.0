@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.tools.rumen;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +28,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,12 +40,19 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.mapreduce.jobhistory.HistoryEvent;
-import org.apache.hadoop.mapreduce.v2.hs.JobHistory;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 /**
  * The main driver of the Rumen Parser.
+ * The arguments are like the following:
+ * file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenjob-trace.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/10/26/000000
+ * file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenjob-trace.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/topology.output hdfs://master.cdh.queens:8020/user/history/done/2014/10/26/000000
+ * file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenjob-trace.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenjob-trace.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/topology.output hdfs://master.cdh.queens:8020/user/history/done/2014/10/26/000000
+ * file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/wcrumenjob-trace.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/wcrumenjob-trace.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/12/wc
+ * file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenoutput/tpch/Q8/q8-rumen.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenoutput/tpch/Q8/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenoutput/tpch/Q8/q8-rumen.json file://home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenoutput/tpch/Q8/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/history/Q8/000000
+ * file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenoutput/tpch/Q8/q8-rumen.json file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/rumenoutput/tpch/Q8/topology.output file:///home/yehia/workspace/research/hadoop-rumen-2.3.0-cdh5.1.0/src/test/resources/history/Q8/000000
+ * 
  */
 public class TraceBuilder extends Configured implements Tool {
   static final private Log LOG = LogFactory.getLog(TraceBuilder.class);
@@ -181,7 +187,10 @@ public class TraceBuilder extends Configured implements Tool {
   public static void main(String[] args) {
     TraceBuilder builder = new TraceBuilder();
     int result = RUN_METHOD_FAILED_EXIT_CODE;
-
+    File topFile = new File("src/test/resources/topology.output");
+    File traceFile = new File("src/test/resources/wcrumenjob-trace.json");
+    topFile.delete();
+    traceFile.delete();
     try {
       result = ToolRunner.run(builder, args); 
     } catch (Throwable t) {
@@ -244,7 +253,7 @@ public class TraceBuilder extends Configured implements Tool {
                 if (jobBuilder != null) {
                   traceWriter.output(jobBuilder.build());
                 }
-                jobBuilder = new JobBuilder(jobID);
+                jobBuilder = new JobBuilder(jobID,args[3]);
               }
 
               if (JobHistoryUtils.isJobConfXml(filePair.first())) {

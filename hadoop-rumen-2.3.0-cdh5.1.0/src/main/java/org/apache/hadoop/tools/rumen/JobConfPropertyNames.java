@@ -26,7 +26,8 @@ public enum JobConfPropertyNames {
   JOB_NAMES("mapred.job.name", MRJobConfig.JOB_NAME),
   TASK_JAVA_OPTS_S("mapred.child.java.opts"),
   MAP_JAVA_OPTS_S("mapred.child.java.opts", MRJobConfig.MAP_JAVA_OPTS),
-  REDUCE_JAVA_OPTS_S("mapred.child.java.opts", MRJobConfig.REDUCE_JAVA_OPTS);
+  REDUCE_JAVA_OPTS_S("mapred.child.java.opts", MRJobConfig.REDUCE_JAVA_OPTS),
+  MAP_INPUT_FILE("mapreduce.input.fileinputformat.inputdir", "mapreduce.input.fileinputformat.inputdir");
 
   private String[] candidates;
 

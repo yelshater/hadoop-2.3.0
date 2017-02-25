@@ -51,6 +51,7 @@ public class LoggedTask implements DeepCompare {
   Pre21JobHistoryConstants.Values taskStatus;
   List<LoggedTaskAttempt> attempts = new ArrayList<LoggedTaskAttempt>();
   List<LoggedLocation> preferredLocations = Collections.emptyList();
+  private String splitId ;
 
   static private Set<String> alreadySeenAnySetterAttributes =
       new TreeSet<String>();
@@ -368,4 +369,12 @@ public class LoggedTask implements DeepCompare {
     compareLoggedLocations(preferredLocations, other.preferredLocations, loc,
         "preferredLocations");
   }
+
+public String getSplitId() {
+	return splitId;
+}
+
+public void setSplitId(String splitId) {
+	this.splitId = splitId;
+}
 }

@@ -26,6 +26,10 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.ehcache.search.Results;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.mapred.TaskStatus;
 import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskType;
@@ -36,11 +40,13 @@ import org.apache.hadoop.mapreduce.jobhistory.JobFinishedEvent;
 import org.apache.hadoop.mapreduce.jobhistory.JobInfoChangeEvent;
 import org.apache.hadoop.mapreduce.jobhistory.JobInitedEvent;
 import org.apache.hadoop.mapreduce.jobhistory.JobPriorityChangeEvent;
+import org.apache.hadoop.mapreduce.jobhistory.JobQueueChangeEvent;
 import org.apache.hadoop.mapreduce.jobhistory.JobStatusChangedEvent;
 import org.apache.hadoop.mapreduce.jobhistory.JobSubmittedEvent;
 import org.apache.hadoop.mapreduce.jobhistory.JobUnsuccessfulCompletionEvent;
 import org.apache.hadoop.mapreduce.jobhistory.MapAttemptFinished;
 import org.apache.hadoop.mapreduce.jobhistory.MapAttemptFinishedEvent;
+import org.apache.hadoop.mapreduce.jobhistory.NormalizedResourceEvent;
 import org.apache.hadoop.mapreduce.jobhistory.ReduceAttemptFinished;
 import org.apache.hadoop.mapreduce.jobhistory.ReduceAttemptFinishedEvent;
 import org.apache.hadoop.mapreduce.jobhistory.TaskAttemptFinished;
@@ -57,6 +63,8 @@ import org.apache.hadoop.mapreduce.jobhistory.TaskUpdatedEvent;
 import org.apache.hadoop.tools.rumen.Pre21JobHistoryConstants.Values;
 import org.apache.hadoop.util.StringUtils;
 
+import util.SplitExtractor;
+
 /**
  * {@link JobBuilder} builds one job. It processes a sequence of
  * {@link HistoryEvent}s.
@@ -65,6 +73,8 @@ public class JobBuilder {
   private static final long BYTES_IN_MEG =
       StringUtils.TraditionalBinaryPrefix.string2long("1m");
 
+  static final private Log LOG = LogFactory.getLog(JobBuilder.class);
+  
   private String jobID;
 
   private boolean finalized = false;
@@ -85,6 +95,13 @@ public class JobBuilder {
 
   private org.apache.hadoop.mapreduce.jobhistory.JhCounters EMPTY_COUNTERS =
       new org.apache.hadoop.mapreduce.jobhistory.JhCounters();
+  
+  
+  /***
+   * This is a dummy counter of the input data block splits
+   */
+  private int dummySplitCounter = 0 ;
+  
 
   /**
    * The number of splits a task can have, before we ignore them all.
@@ -92,6 +109,7 @@ public class JobBuilder {
   private final static int MAXIMUM_PREFERRED_LOCATIONS = 25;
 
   private int[] attemptTimesPercentiles = null;
+  private String csvFileName ;
 
   // Use this to search within the java options to get heap sizes.
   // The heap size number is in Capturing Group 1.
@@ -103,6 +121,11 @@ public class JobBuilder {
 
   public JobBuilder(String jobID) {
     this.jobID = jobID;
+  }
+  
+  public JobBuilder(String jobID, String csvFileName) {
+	    this.jobID = jobID;
+	    this.setCsvFileName(csvFileName);
   }
 
   public String getJobID() {
@@ -118,7 +141,12 @@ public class JobBuilder {
       }
     }
   }
-
+  
+  private int getNextSplitId() {
+	  dummySplitCounter ++;
+	  return dummySplitCounter;
+  }
+  
   /**
    * Process one {@link HistoryEvent}
    * 
@@ -132,10 +160,16 @@ public class JobBuilder {
     }
 
     // these are in lexicographical order by class name.
-    if (event instanceof AMStartedEvent) {
+    if ( event instanceof NormalizedResourceEvent || event instanceof JobQueueChangeEvent) {
       // ignore this event as Rumen currently doesnt need this event
       //TODO Enhance Rumen to process this event and capture restarts
       return;
+    } else if (event instanceof NormalizedResourceEvent) {
+      // Log an warn message as NormalizedResourceEvent shouldn't be written.
+      LOG.warn("NormalizedResourceEvent should be ignored in history server.");
+    }
+    else if (event instanceof AMStartedEvent) {
+        processAMStartedEvent((AMStartedEvent) event);
     } else if (event instanceof JobFinishedEvent) {
       processJobFinishedEvent((JobFinishedEvent) event);
     } else if (event instanceof JobInfoChangeEvent) {
@@ -168,12 +202,16 @@ public class JobBuilder {
       processTaskStartedEvent((TaskStartedEvent) event);
     } else if (event instanceof TaskUpdatedEvent) {
       processTaskUpdatedEvent((TaskUpdatedEvent) event);
-    } else
+    } else{
+    	System.err.println("The event is " + event + " with event type " + event.getEventType());
       throw new IllegalArgumentException(
-          "JobBuilder.process(HistoryEvent): unknown event type");
+          "JobBuilder.process(HistoryEvent): unknown event type:"
+          + event.getEventType() + " for event:" + event);
+    }
   }
 
-  static String extract(Properties conf, String[] names, String defaultValue) {
+
+static String extract(Properties conf, String[] names, String defaultValue) {
     for (String name : names) {
       String result = conf.getProperty(name);
 
@@ -244,6 +282,12 @@ public class JobBuilder {
     if (queue != null) {
       result.setQueue(queue);
     }
+    String inputFileName = extract(conf, JobConfPropertyNames.MAP_INPUT_FILE
+            .getCandidates(), null);
+    List<String> inputFileNames = new ArrayList<String>();
+    if (inputFileName != null && !inputFileName.isEmpty())
+    	inputFileNames.add(inputFileName);
+    result.setInputFileNames(inputFileNames);
     result.setJobName(extract(conf, JobConfPropertyNames.JOB_NAMES
         .getCandidates(), null));
 
@@ -303,7 +347,7 @@ public class JobBuilder {
             LoggedLocation host = attempt.getLocation();
 
             List<LoggedLocation> locs = task.getPreferredLocations();
-
+            task.setSplitId(result.getInputFileNames().get(0)+"_" + getNextSplitId());
             if (host != null && locs != null) {
               for (LoggedLocation loc : locs) {
                 ParsedHost preferedLoc = new ParsedHost(loc);
@@ -391,7 +435,6 @@ public class JobBuilder {
     } else {
       result.setMapperTriesToSucceed(null);
     }
-
     return result;
   }
 
@@ -511,6 +554,11 @@ public class JobBuilder {
     attempt.putTrackerName(event.getTrackerName());
     attempt.putHttpPort(event.getHttpPort());
     attempt.putShufflePort(event.getShufflePort());
+    attempt.setOriginalLocality(event.getLocality());
+    /***Temporary Commenting *
+    if (!csvFileName.isEmpty())
+    	attempt.setFileSplitName(SplitExtractor.extractSplitName(csvFileName, event.getTaskId().toString()));
+    **Temporary Commenting **/
   }
 
   private void processTaskAttemptFinishedEvent(TaskAttemptFinishedEvent event) {
@@ -599,7 +647,9 @@ public class JobBuilder {
   private void processJobSubmittedEvent(JobSubmittedEvent event) {
     result.setJobID(event.getJobId().toString());
     result.setJobName(event.getJobName());
-    result.setUser(event.getUserName());
+    //result.setUser(event.getUserName());
+    // TODO Should be removed later
+    result.setUser("yehia");
     result.setSubmitTime(event.getSubmitTime());
     result.putJobConfPath(event.getJobConfPath());
     result.putJobAcls(event.getJobAcls());
@@ -631,6 +681,14 @@ public class JobBuilder {
     result.setLaunchTime(event.getLaunchTime());
   }
 
+  /***
+   * To process AMStartedEvent and to include the AM container node in the traces
+   * @author Yehia Elshater
+   * @param event
+   */
+  private void processAMStartedEvent(AMStartedEvent event) {
+	result.setAmMasterNode(event.getNodeManagerHost());
+  }
   private void processJobFinishedEvent(JobFinishedEvent event) {
     result.setFinishTime(event.getFinishTime());
     result.setJobID(jobID);
@@ -774,4 +832,12 @@ public class JobBuilder {
 
     return null;
   }
+
+public String getCsvFileName() {
+	return csvFileName;
+}
+
+public void setCsvFileName(String csvFileName) {
+	this.csvFileName = csvFileName;
+}
 }
