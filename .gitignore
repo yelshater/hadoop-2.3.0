@@ -1,12 +1,56 @@
-*.class
+/document.pdf
+/document.synctex.gz
+/tmp
+build
+.classpath
+/documen.synctex.gz
+/.texlipse
+/document.aux
+/document.log
+.gradle
+*metadata*
+/document.log
+.metadata/.plugins/org.eclipse.core.resources/.safetable/org.ecl
+ipse.core.resources
+*metadata*/*
+*metadata*/
+.metadata*
+*org.eclipse.*
+*document.pdf
+*.synctex.gz
+*texlipse
+*.project
+*.log
+*tmp*
+*.pydevproject
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+courses/.metadata/.log
+*courses/.metadata/.log
+/courses/.metadata/*
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# External tool builders
+.externalToolBuilders/
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Locally stored "Eclipse launch configurations"
+*.launch
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# sbteclipse plugin 
+.target
+
+# TeXlipse plugin
+.texlipse

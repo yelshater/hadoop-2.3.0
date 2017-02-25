@@ -1,0 +1,74 @@
+// import org.apache.tools.ant.taskdefs.Chmod;
+
+apply plugin: 'java'
+apply plugin: 'scala'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin:'application' 
+
+
+mainClassName = 'org.apache.hadoop.mapreduce.v2.SimpleTestMRJob'
+eclipse {
+  project {
+    name = 'Hadoop_230'
+  }
+}
+repositories {
+	maven {
+        url "https://repository.cloudera.com/artifactory/cloudera-repos/"
+		
+    }
+	
+	maven {
+        url "https://repository.cloudera.com/artifactory/libs-release-local/"
+		
+    }
+	mavenLocal()
+	mavenCentral()	
+
+} 
+
+group = 'com.queens.ca'
+archivesBaseName = 'spark-core'
+version = '2.10'
+sourceCompatibility = 1.7
+
+sourceSets {
+    main { 
+      output.resourcesDir = "build/classes/main" 
+    }
+  }
+
+eclipse {
+    classpath {
+       downloadSources=true
+       downloadJavadoc = true
+    }
+}
+
+project.ext {
+ cdhVersion = '1.0.0-cdh5.1.0'
+}
+
+configurations {
+    //compile.exclude module: 'commons'
+    //all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-server-resourcemanager'
+    //all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-api'
+    
+    //all*.exclude group: 'org.gradle.test.excludes', module: 'reports'
+}
+dependencies {
+  	compile group: 'org.apache.spark' , name:'spark-core_2.10', version: project.ext.cdhVersion
+  	//compile group: 'org.apache.spark' , name:'spark-sql_2.10', version: project.ext.cdhVersion
+	
+	// Unit tests
+	//testCompile 'junit:junit:4.10'
+	//testCompile 'org.jmock:jmock:2.5.1'
+	//testCompile 'org.jmock:jmock-legacy:2.5.1'
+//	testCompile 'org.mockito:mockito-all:1.9.0'
+	//testCompile 'jmock:jmock-cglib:1.2.0'
+	//testCompile 'org.objenesis:objenesis:1.2'
+
+	      
+}
