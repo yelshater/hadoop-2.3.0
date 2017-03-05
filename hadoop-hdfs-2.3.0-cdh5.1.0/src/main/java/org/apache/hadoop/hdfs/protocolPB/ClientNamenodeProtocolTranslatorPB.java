@@ -50,6 +50,7 @@ import org.apache.hadoop.hdfs.protocol.DatanodeID;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.protocol.DirectoryListing;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+import org.apache.hadoop.hdfs.protocol.SnapshotAccessControlException;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.DatanodeReportType;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.RollingUpgradeAction;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.SafeModeAction;
@@ -137,6 +138,7 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetOwn
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPermissionRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto.BlockRepInfo;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetSafeModeRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetTimesRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.UpdateBlockForPipelineRequestProto;
@@ -288,6 +290,7 @@ public class ClientNamenodeProtocolTranslatorPB implements
     SetReplicationRequestProto req = SetReplicationRequestProto.newBuilder()
         .setSrc(src)
         .setReplication(replication)
+        .addBlockRepInfo(BlockRepInfo.newBuilder().setBlockId(""))
         .build();
     try {
       return rpcProxy.setReplication(null, req).getResult();
@@ -296,6 +299,61 @@ public class ClientNamenodeProtocolTranslatorPB implements
     }
   }
 
+  /***
+   * @author Yehia Elshater
+   * @param src file name
+   * @param blockId the block id to be replicated
+   * @param replication replication to set the file to
+   * @return
+   * @throws AccessControlException
+   * @throws DSQuotaExceededException
+   * @throws FileNotFoundException
+   * @throws SafeModeException
+   * @throws UnresolvedLinkException
+   * @throws IOException
+   */
+  //private static final Log LOG = LogFactory.getLog(ClientNamenodeProtocolTranslatorPB.class);
+  @Override
+  public boolean setReplication(String src, String blockId, short replication)
+	      throws AccessControlException, DSQuotaExceededException,
+	      FileNotFoundException, SafeModeException, UnresolvedLinkException,
+	      IOException {
+	  	 
+	    SetReplicationRequestProto req = SetReplicationRequestProto.newBuilder()
+	        .setSrc(src)
+	        .setReplication(replication)
+	        .addBlockRepInfo(BlockRepInfo.newBuilder().setBlockId(blockId))
+	        .build();
+	    try {
+	      return rpcProxy.setReplication(null, req).getResult();
+	    } catch (ServiceException e) {
+	      throw ProtobufHelper.getRemoteException(e);
+	    }
+	  }
+  
+  
+  /***
+   * @author Yehia Elshater
+   */
+  @Override
+	public boolean setReplication(String src, BlockRepInfo blockInfo,
+			short replication) throws AccessControlException,
+			DSQuotaExceededException, FileNotFoundException, SafeModeException,
+			UnresolvedLinkException, SnapshotAccessControlException,
+			IOException {
+	  SetReplicationRequestProto req = SetReplicationRequestProto.newBuilder()
+		        .setSrc(src)
+		        .setReplication(replication)
+		        .addBlockRepInfo(blockInfo)
+		        .build();
+		    try {
+		      return rpcProxy.setReplication(null, req).getResult();
+		    } catch (ServiceException e) {
+		      throw ProtobufHelper.getRemoteException(e);
+		    }
+	}
+  
+  
   @Override
   public void setPermission(String src, FsPermission permission)
       throws AccessControlException, FileNotFoundException, SafeModeException,
