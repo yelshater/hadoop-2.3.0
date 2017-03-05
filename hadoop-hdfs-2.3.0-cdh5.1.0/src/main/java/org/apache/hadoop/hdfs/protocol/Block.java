@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
+import org.apache.hadoop.hdfs.server.blockmanagement.DatanodeStorageInfo;
 import org.apache.hadoop.hdfs.server.common.GenerationStamp;
 import org.apache.hadoop.io.*;
 
@@ -85,6 +86,8 @@ public class Block implements Writable, Comparable<Block> {
   private long blockId;
   private long numBytes;
   private long generationStamp;
+  
+  private String[] targetNodes;
 
   public Block() {this(0, 0, 0);}
 
