@@ -162,6 +162,7 @@ import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetPer
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetQuotaResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto.BlockRepInfo;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationResponseProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetSafeModeRequestProto;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetSafeModeResponseProto;
@@ -384,9 +385,16 @@ public class ClientNamenodeProtocolServerSideTranslatorPB implements
   @Override
   public SetReplicationResponseProto setReplication(RpcController controller,
       SetReplicationRequestProto req) throws ServiceException {
+	  boolean result = false;
+	  BlockRepInfo repInfo = req.getBlockRepInfoList().get(0);
     try {
-      boolean result = 
+      if (repInfo == null || repInfo.getBlockId().isEmpty()) {
+      result = 
           server.setReplication(req.getSrc(), (short) req.getReplication());
+      }
+      else {
+    	  result = server.setReplication(req.getSrc(), repInfo,(short) req.getReplication());
+      }
       return SetReplicationResponseProto.newBuilder().setResult(result).build();
     } catch (IOException e) {
       throw new ServiceException(e);
