@@ -266,7 +266,7 @@ public interface ClientProtocol {
    * @throws SnapshotAccessControlException
    * @throws IOException
    */
-  public boolean setReplication(String src, String blockId, short replication)
+  public boolean setReplication(String src, String blockId , short replication)
 	      throws AccessControlException, DSQuotaExceededException,
 	      FileNotFoundException, SafeModeException, UnresolvedLinkException,
 	      SnapshotAccessControlException, IOException;
