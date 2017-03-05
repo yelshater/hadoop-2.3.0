@@ -236,4 +236,17 @@ public class Block implements Writable, Comparable<Block> {
     //GenerationStamp is IRRELEVANT and should not be used here
     return (int)(blockId^(blockId>>>32));
   }
+
+  /***
+   * 
+   * @author Yehia Elshater
+   * @return the potential target nodes that the current block should be transferred to. 
+   */
+public String[] getTargetNodes() {
+	return targetNodes;
+}
+
+public void setTargetNodes(String[] targetNodes) {
+	this.targetNodes = targetNodes;
+}
 }
