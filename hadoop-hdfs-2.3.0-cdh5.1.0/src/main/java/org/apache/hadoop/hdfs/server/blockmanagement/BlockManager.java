@@ -55,10 +55,12 @@ import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlock;
 import org.apache.hadoop.hdfs.protocol.LocatedBlocks;
 import org.apache.hadoop.hdfs.protocol.UnregisteredNodeException;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto.BlockRepInfo;
 import org.apache.hadoop.hdfs.security.token.block.BlockTokenSecretManager;
 import org.apache.hadoop.hdfs.security.token.block.BlockTokenSecretManager.AccessMode;
 import org.apache.hadoop.hdfs.security.token.block.DataEncryptionKey;
 import org.apache.hadoop.hdfs.security.token.block.ExportedBlockKeys;
+import org.apache.hadoop.hdfs.server.blockmanagement.BlockPlacementPolicy.NotEnoughReplicasException;
 import org.apache.hadoop.hdfs.server.blockmanagement.CorruptReplicasMap.Reason;
 import org.apache.hadoop.hdfs.server.blockmanagement.PendingDataNodeMessages.ReportedBlockInfo;
 import org.apache.hadoop.hdfs.server.common.HdfsServerConstants.BlockUCState;
@@ -1299,9 +1301,17 @@ public class BlockManager {
             } else {
               additionalReplRequired = 1; // Needed on a new rack
             }
-            work.add(new ReplicationWork(block, bc, srcNode,
-                containingNodes, liveReplicaNodes, additionalReplRequired,
-                priority));
+            ReplicationWork rw = null;
+            if (block.getTargetNodes() == null)
+            rw = new ReplicationWork(block, bc, srcNode,
+                    containingNodes, liveReplicaNodes, additionalReplRequired,
+                    priority);
+            else 
+            	rw = new ReplicationWork(block, bc, srcNode,
+                        containingNodes, liveReplicaNodes, additionalReplRequired,
+                        priority, block.getTargetNodes());
+            
+            work.add(rw);
           }
         }
       }
@@ -2574,9 +2584,15 @@ public class BlockManager {
   
   /** Set replication for the blocks. */
   public void setReplication(final short oldRepl, final short newRepl,
-      final String src, final Block... blocks) {
+      final String src,BlockRepInfo blockInfo, final Block... blocks) {
+    
+	if (blockInfo !=null && !blockInfo.getBlockId().isEmpty()) {
+		setRepSingleBlock(oldRepl, newRepl, blockInfo, blocks);
+		return;
+	}
+    
     if (newRepl == oldRepl) {
-      return;
+    	return;
     }
 
     // update needReplication priority queues
@@ -2596,6 +2612,38 @@ public class BlockManager {
           + " for " + src);
     }
   }
+/**
+ * @author Yehia Elshater
+ * This method is used only to set replica of a single block (@blockId)
+ * @param oldRepl The old replication of a certain block
+ * @param newRepl The target replication factor of a certain block
+ * @param blockId The block id of the input block
+ * @param blocks The set of all blocks of a certain file
+ */
+private void setRepSingleBlock(final short oldRepl, final short newRepl,
+		BlockRepInfo blockInfo, final Block... blocks) {
+	for (Block b : blocks) {
+		NumberReplicas repl = countNodes(b);
+		if (String.valueOf(b.getBlockId()).equals(blockInfo.getBlockId())) {
+			int delta = newRepl - repl.liveReplicas(); 
+			if (blockInfo.getTargetHostsList()!= null && !blockInfo.getTargetHostsList().isEmpty()) {
+				String []targetHostNames = new String[blockInfo.getTargetHostsCount()];
+				blockInfo.getTargetHostsList().toArray(targetHostNames);
+				b.setTargetNodes(targetHostNames);
+			}
+			else {
+				b.setTargetNodes(null);
+			}
+    		if (delta > 0) {
+    			updateNeededReplications(b, 0, newRepl-oldRepl);
+    		}
+    		if (delta < 0 ) {
+    			processOverReplicatedBlock(b, newRepl, null, null);
+    		}
+    		return;
+		}
+	}
+}
 
   /**
    * Find how many of the containing nodes are "extra", if any.
@@ -3446,6 +3494,11 @@ public class BlockManager {
     private int additionalReplRequired;
 
     private DatanodeStorageInfo targets[];
+    /***
+     * @author Yehia Elshater
+     * This should be passed from dfsclient.setRep method
+     */
+    private String [] targetHosts ;
     private int priority;
 
     public ReplicationWork(Block block,
@@ -3463,13 +3516,63 @@ public class BlockManager {
       this.additionalReplRequired = additionalReplRequired;
       this.priority = priority;
       this.targets = null;
+      this.targetHosts = null;
     }
+    
+    /**
+     * @author Yehia Elshater
+     * @param block
+     * @param bc
+     * @param srcNode
+     * @param containingNodes
+     * @param liveReplicaStorages
+     * @param additionalReplRequired
+     * @param priority
+     * @param targets: the recommended target nodes to be used for the new replications.
+     */
+    public ReplicationWork(Block block,
+            BlockCollection bc,
+            DatanodeDescriptor srcNode,
+            List<DatanodeDescriptor> containingNodes,
+            List<DatanodeStorageInfo> liveReplicaStorages,
+            int additionalReplRequired,
+            int priority, String [] targetHosts) {
+          this.block = block;
+          this.bc = bc;
+          this.srcNode = srcNode;
+          this.containingNodes = containingNodes;
+          this.liveReplicaStorages = liveReplicaStorages;
+          this.additionalReplRequired = additionalReplRequired;
+          this.priority = priority;
+          this.targetHosts = targetHosts;
+        }
     
     private void chooseTargets(BlockPlacementPolicy blockplacement,
         Set<Node> excludedNodes) {
+    	/***
+    	 * @author Yehia Elshater
+    	 * Adding this condition. If targets is null, that means there is a request to 
+    	 * increase the replication of the block to certain data nodes
+    	 */
+      if (targetHosts==null || targetHosts[0].isEmpty()) {
       targets = blockplacement.chooseTarget(bc.getName(),
           additionalReplRequired, srcNode, liveReplicaStorages, false,
           excludedNodes, block.getNumBytes(), StorageType.DEFAULT);
+      }
+      else if (blockplacement instanceof BlockPlacementCustomPolicy) {
+    	  BlockPlacementCustomPolicy customPolicy = (BlockPlacementCustomPolicy) blockplacement;
+    	/*  targets = customPolicy.chooseTarget(bc.getName(),
+    	          additionalReplRequired, srcNode, liveReplicaStorages, false,
+    	          excludedNodes, block.getNumBytes(), StorageType.DEFAULT);*/
+    	   List<DatanodeStorageInfo> results = new ArrayList<DatanodeStorageInfo>();
+    	   try {
+			 customPolicy.chooseCustomDataStorages(additionalReplRequired, excludedNodes, block.getNumBytes(), results, true, StorageType.DEFAULT, targetHosts);
+			 targets = new DatanodeStorageInfo[results.size()];
+			 results.toArray(targets);
+		} catch (NotEnoughReplicasException e) {
+			e.printStackTrace();
+		}
+      }
     }
   }
 
