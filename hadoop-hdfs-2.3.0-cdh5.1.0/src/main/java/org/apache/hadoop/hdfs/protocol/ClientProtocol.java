@@ -40,6 +40,7 @@ import org.apache.hadoop.fs.permission.AclStatus;
 import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.protocol.HdfsConstants.RollingUpgradeAction;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto.BlockRepInfo;
 import org.apache.hadoop.hdfs.security.token.block.DataEncryptionKey;
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenIdentifier;
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenSelector;
@@ -249,6 +250,46 @@ public interface ClientProtocol {
       throws AccessControlException, DSQuotaExceededException,
       FileNotFoundException, SafeModeException, UnresolvedLinkException,
       SnapshotAccessControlException, IOException;
+  
+  
+  /***
+   * @author Yehia Elshater
+   * @param src
+   * @param blockId
+   * @param replication
+   * @return
+   * @throws AccessControlException
+   * @throws DSQuotaExceededException
+   * @throws FileNotFoundException
+   * @throws SafeModeException
+   * @throws UnresolvedLinkException
+   * @throws SnapshotAccessControlException
+   * @throws IOException
+   */
+  public boolean setReplication(String src, String blockId, short replication)
+	      throws AccessControlException, DSQuotaExceededException,
+	      FileNotFoundException, SafeModeException, UnresolvedLinkException,
+	      SnapshotAccessControlException, IOException;
+  
+  
+  /***
+   * @author Yehia Elshater
+   * @param src
+   * @param blockInfo: contains the blockid and the target hosts to replicate
+   * @param replication
+   * @return
+   * @throws AccessControlException
+   * @throws DSQuotaExceededException
+   * @throws FileNotFoundException
+   * @throws SafeModeException
+   * @throws UnresolvedLinkException
+   * @throws SnapshotAccessControlException
+   * @throws IOException
+   */
+  public boolean setReplication(String src, BlockRepInfo blockInfo, short replication)
+	      throws AccessControlException, DSQuotaExceededException,
+	      FileNotFoundException, SafeModeException, UnresolvedLinkException,
+	      SnapshotAccessControlException, IOException;
 
   /**
    * Set permissions for an existing file/directory.
