@@ -87,11 +87,13 @@ import org.apache.hadoop.hdfs.protocol.NSQuotaExceededException;
 import org.apache.hadoop.hdfs.protocol.QuotaExceededException;
 import org.apache.hadoop.hdfs.protocol.RecoveryInProgressException;
 import org.apache.hadoop.hdfs.protocol.RollingUpgradeInfo;
+import org.apache.hadoop.hdfs.protocol.SnapshotAccessControlException;
 import org.apache.hadoop.hdfs.protocol.SnapshotDiffReport;
 import org.apache.hadoop.hdfs.protocol.SnapshottableDirectoryStatus;
 import org.apache.hadoop.hdfs.protocol.UnregisteredNodeException;
 import org.apache.hadoop.hdfs.protocol.UnresolvedPathException;
 import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.ClientNamenodeProtocol;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto.BlockRepInfo;
 import org.apache.hadoop.hdfs.protocol.proto.DatanodeProtocolProtos.DatanodeProtocolService;
 import org.apache.hadoop.hdfs.protocol.proto.NamenodeProtocolProtos.NamenodeProtocolService;
 import org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolPB;
@@ -535,6 +537,24 @@ class NameNodeRpcServer implements NamenodeProtocols {
     throws IOException {  
     return namesystem.setReplication(src, replication);
   }
+  
+  /***
+   * @author Yehia Elshater
+   */
+  @Override
+  public boolean setReplication(String src, String blockId, short replication) throws IOException{
+  	// TODO Auto-generated method stub
+  	return  namesystem.setReplication(src,blockId,replication);
+  }
+  
+  @Override
+	public boolean setReplication(String src, BlockRepInfo blockInfo,
+			short replication) throws AccessControlException,
+			DSQuotaExceededException, FileNotFoundException, SafeModeException,
+			UnresolvedLinkException, SnapshotAccessControlException,
+			IOException {
+		return  namesystem.setReplication(src,blockInfo,replication);
+	}
     
   @Override // ClientProtocol
   public void setPermission(String src, FsPermission permissions)
