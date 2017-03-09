@@ -171,6 +171,7 @@ import org.apache.hadoop.hdfs.protocol.SnapshotDiffReport;
 import org.apache.hadoop.hdfs.protocol.SnapshotDiffReport.DiffReportEntry;
 import org.apache.hadoop.hdfs.protocol.SnapshottableDirectoryStatus;
 import org.apache.hadoop.hdfs.protocol.datatransfer.ReplaceDatanodeOnFailure;
+import org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos.SetReplicationRequestProto.BlockRepInfo;
 import org.apache.hadoop.hdfs.security.token.block.BlockTokenSecretManager;
 import org.apache.hadoop.hdfs.security.token.block.BlockTokenSecretManager.AccessMode;
 import org.apache.hadoop.hdfs.security.token.delegation.DelegationTokenIdentifier;
@@ -2083,14 +2084,31 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
   boolean setReplication(final String src, final short replication)
       throws IOException {
     try {
-      return setReplicationInt(src, replication);
+      return setReplicationInt(src,null, replication);
     } catch (AccessControlException e) {
       logAuditEvent(false, "setReplication", src);
       throw e;
     }
   }
+  
+  /****
+   * @author Yehia Elshater
+   * @param src
+   * @param replication
+   * @return
+   * @throws IOException
+   */
+  boolean setReplication(final String src, String blockId, final short replication)
+	      throws IOException {
+	    try {
+	      return setReplicationInt(src, BlockRepInfo.newBuilder().setBlockId(blockId).build() , replication);
+	    } catch (AccessControlException e) {
+	      logAuditEvent(false, "setReplication", src);
+	      throw e;
+	    }
+	  }
 
-  private boolean setReplicationInt(String src, final short replication)
+   boolean setReplicationInt(String src, BlockRepInfo blockInfo, final short replication)
       throws IOException {
     blockManager.verifyReplication(src, replication, null);
     final boolean isFile;
@@ -2110,7 +2128,7 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
       final Block[] blocks = dir.setReplication(src, replication, blockRepls);
       isFile = blocks != null;
       if (isFile) {
-        blockManager.setReplication(blockRepls[0], blockRepls[1], src, blocks);
+        blockManager.setReplication(blockRepls[0], blockRepls[1], src, blockInfo, blocks);
       }
     } finally {
       writeUnlock();
@@ -2122,7 +2140,27 @@ public class FSNamesystem implements Namesystem, FSClusterStats,
     }
     return isFile;
   }
-
+   
+   /***
+    * 
+    * @author Yehia Elshater
+    * @param src
+    * @param blockInfo
+    * @param replication
+    * @return
+ * @throws IOException 
+    */
+	public boolean setReplication(String src, BlockRepInfo blockInfo,
+			short replication) throws IOException {
+		try {
+			return setReplicationInt(src,
+					blockInfo,
+					replication);
+		} catch (AccessControlException e) {
+			logAuditEvent(false, "setReplication", src);
+			throw e;
+		}
+	}
   long getPreferredBlockSize(String filename) 
       throws IOException, UnresolvedLinkException {
     FSPermissionChecker pc = getPermissionChecker();
