@@ -18,7 +18,9 @@
 
 package org.apache.hadoop.mapreduce.v2.app.rm;
 
+import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId;
+import org.apache.hadoop.util.file.LogMessageFileWriter;
 import org.apache.hadoop.yarn.api.records.Resource;
 
 
@@ -28,6 +30,10 @@ public class ContainerRequestEvent extends ContainerAllocatorEvent {
   private final String[] hosts;
   private final String[] racks;
   private boolean earlierAttemptFailed = false;
+  /***
+   * @author Yehia Elshater
+   */
+  private TaskSplitMetaInfo metaInfo ;
 
   public ContainerRequestEvent(TaskAttemptId attemptID, 
       Resource capability,
@@ -38,8 +44,19 @@ public class ContainerRequestEvent extends ContainerAllocatorEvent {
     this.racks = racks;
   }
   
+  public ContainerRequestEvent(TaskAttemptId attemptID, 
+	      Resource capability,
+	      String[] hosts, String[] racks, TaskSplitMetaInfo metaInfo) {
+	  	super(attemptID, ContainerAllocator.EventType.CONTAINER_REQ);
+	  	this.capability = capability;
+	    this.hosts = hosts;
+	    this.racks = racks;
+	    this.metaInfo = metaInfo;
+	  }
+  
   ContainerRequestEvent(TaskAttemptId attemptID, Resource capability) {
-    this(attemptID, capability, new String[0], new String[0]);
+    //this(attemptID, capability, new String[0], new String[0]);
+    this(attemptID, capability, new String[0], new String[0],null);
     this.earlierAttemptFailed = true;
   }
   
@@ -60,6 +77,14 @@ public class ContainerRequestEvent extends ContainerAllocatorEvent {
   
   public String[] getRacks() {
     return racks;
+  }
+  
+  /***
+   * @author Yehia Elshater
+   * @return
+   */
+  public TaskSplitMetaInfo getTaskSplitMetaInfo() {
+	  return metaInfo;
   }
   
   public boolean getEarlierAttemptFailed() {
