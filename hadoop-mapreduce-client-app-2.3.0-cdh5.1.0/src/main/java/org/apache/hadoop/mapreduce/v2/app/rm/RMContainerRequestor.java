@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -32,10 +33,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.MRJobConfig;
+import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId;
 import org.apache.hadoop.mapreduce.v2.app.AppContext;
 import org.apache.hadoop.mapreduce.v2.app.client.ClientService;
+import org.apache.hadoop.util.file.LogMessageFileWriter;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateResponse;
 import org.apache.hadoop.yarn.api.records.ContainerId;
@@ -47,6 +51,8 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
+import org.apache.hadoop.yarn.proto.YarnProtos.SplitMessage;
+import org.apache.hadoop.yarn.proto.YarnProtos.SplitMessage.Builder;
 
 
 /**
@@ -103,20 +109,75 @@ public abstract class RMContainerRequestor extends RMCommunicator {
     final String[] racks;
     //final boolean earlierAttemptFailed;
     final Priority priority;
+    private static final Priority PRIORITY_MAP;
     
-    public ContainerRequest(ContainerRequestEvent event, Priority priority) {
-      this(event.getAttemptID(), event.getCapability(), event.getHosts(),
-          event.getRacks(), priority);
+    static {
+    	 	PRIORITY_MAP = RecordFactoryProvider.getRecordFactory(null).newRecordInstance(Priority.class);
+    	    PRIORITY_MAP.setPriority(20);
     }
     
+    /***
+     * @author Yehia Elshater
+     */
+    TaskSplitMetaInfo metaInfo;
+    SplitMessage splitMessage;
+	public ContainerRequest(ContainerRequestEvent event, Priority priority) {
+		this(event.getAttemptID(), event.getCapability(), event.getHosts(),
+			event.getRacks(), priority, event.getTaskSplitMetaInfo());
+		LogMessageFileWriter.writeLogMessage("First ContainerRequest Constructor" );
+	}
+    
+    /***
+     * @author Yehia Elshater
+     */
+    public ContainerRequest(TaskAttemptId attemptID,
+            Resource capability, String[] hosts, String[] racks, 
+            Priority priority, TaskSplitMetaInfo metaInfo) {
+    	
+    	this(attemptID,capability, hosts, racks, priority);
+		LogMessageFileWriter.writeLogMessage("Third ContainerRequest Constructor 1" );
+    	this.metaInfo = metaInfo;
+    	StringBuffer sb = new StringBuffer();
+    	Builder sm = SplitMessage.newBuilder();
+    	LogMessageFileWriter.writeLogMessage("Checking this this.metaInfo");
+    	
+    	try {
+    	 if (metaInfo!=null) {
+       	  if (metaInfo.getSplitIndex()!=null && !metaInfo.getSplitIndex().getSplitLocation().isEmpty()) {
+       		  LogMessageFileWriter.writeLogMessage("After metaInfo.getSplitIndex()!=null && !metaInfo.getSplitIndex().getSplitLocation().isEmpty()");
+       		  String loc = metaInfo.getSplitIndex().getSplitLocation();
+       		  Path p = new Path(loc.substring(0, loc.lastIndexOf(':')));
+       		  sb.append(p.getParent().getName()).append("-").append(p.getName()); //parentfolder-filename
+       		  sm.setFileName(sb.toString());
+       		  sm.setFilePath(p.toString());
+       		  sb.setLength(0);
+       		  sm.setStartOffset(metaInfo.getStartOffset());
+       		  sm.setInputLength(metaInfo.getInputDataLength());
+       		  for (String host : metaInfo.getLocations()) {
+       			  sm.addSplitHosts(host);
+       		  }
+       		  this.splitMessage = sm.build();
+       	  }
+       	  LogMessageFileWriter.writeLogMessage("setting splitMessage");
+         }
+    	 else {
+    		 LogMessageFileWriter.writeLogMessage("metaInfo is null");
+    	 }
+    	}
+    	catch (Exception x ) {
+    		LogMessageFileWriter.writeLogMessage(x.getMessage());
+    	}
+     }
     public ContainerRequest(TaskAttemptId attemptID,
         Resource capability, String[] hosts, String[] racks, 
         Priority priority) {
+      LogMessageFileWriter.writeLogMessage("Second ContainerRequest Constructor 1" );
       this.attemptID = attemptID;
       this.capability = capability;
       this.hosts = hosts;
       this.racks = racks;
       this.priority = priority;
+      
     }
     
     public String toString() {
@@ -124,7 +185,20 @@ public abstract class RMContainerRequestor extends RMCommunicator {
       sb.append("AttemptId[").append(attemptID).append("]");
       sb.append("Capability[").append(capability).append("]");
       sb.append("Priority[").append(priority).append("]");
+      if (splitMessage!=null && splitMessage.isInitialized()) {
+    	  sb.append("SplitName[").append(splitMessage.getFileName()).append("]");
+      }
+      
       return sb.toString();
+    }
+    
+    /***
+     * 
+     * @author Yehia Elshater
+     * @return
+     */
+    public SplitMessage getSplitMessage () {
+    	return splitMessage;
     }
   }
 
@@ -301,17 +375,17 @@ public abstract class RMContainerRequestor extends RMCommunicator {
     for (String host : req.hosts) {
       // Data-local
       if (!isNodeBlacklisted(host)) {
-        addResourceRequest(req.priority, host, req.capability);
+        addResourceRequest(req.priority, host, req.capability,req.getSplitMessage());
       }      
     }
 
     // Nothing Rack-local for now
     for (String rack : req.racks) {
-      addResourceRequest(req.priority, rack, req.capability);
+      addResourceRequest(req.priority, rack, req.capability,req.getSplitMessage());
     }
 
     // Off-switch
-    addResourceRequest(req.priority, ResourceRequest.ANY, req.capability);
+    addResourceRequest(req.priority, ResourceRequest.ANY, req.capability,req.getSplitMessage());
   }
 
   protected void decContainerReq(ContainerRequest req) {
@@ -327,8 +401,15 @@ public abstract class RMContainerRequestor extends RMCommunicator {
     decResourceRequest(req.priority, ResourceRequest.ANY, req.capability);
   }
 
+  /***
+   * Adding splitName as a new parameter to this method.
+   * @author Yehia Elshater
+   * @param priority
+   * @param resourceName
+   * @param capability
+   */
   private void addResourceRequest(Priority priority, String resourceName,
-      Resource capability) {
+      Resource capability, SplitMessage splitMessage) {
     Map<String, Map<Resource, ResourceRequest>> remoteRequests =
       this.remoteRequestsTable.get(priority);
     if (remoteRequests == null) {
@@ -350,6 +431,9 @@ public abstract class RMContainerRequestor extends RMCommunicator {
       remoteRequest.setResourceName(resourceName);
       remoteRequest.setCapability(capability);
       remoteRequest.setNumContainers(0);
+      List<SplitMessage> splitMessages = new ArrayList<SplitMessage>();
+      splitMessages.add(splitMessage);
+      remoteRequest.setSplitMessages(splitMessages);
       reqMap.put(capability, remoteRequest);
     }
     remoteRequest.setNumContainers(remoteRequest.getNumContainers() + 1);
