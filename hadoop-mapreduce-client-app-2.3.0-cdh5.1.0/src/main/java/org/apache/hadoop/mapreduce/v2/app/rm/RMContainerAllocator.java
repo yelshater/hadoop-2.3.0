@@ -18,7 +18,12 @@
 
 package org.apache.hadoop.mapreduce.v2.app.rm;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,6 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,6 +48,7 @@ import org.apache.hadoop.mapreduce.JobCounter;
 import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.jobhistory.JobHistoryEvent;
 import org.apache.hadoop.mapreduce.jobhistory.NormalizedResourceEvent;
+import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
 import org.apache.hadoop.mapreduce.v2.api.records.JobId;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskAttemptId;
 import org.apache.hadoop.mapreduce.v2.api.records.TaskType;
@@ -58,6 +65,7 @@ import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEvent;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptEventType;
 import org.apache.hadoop.mapreduce.v2.app.job.event.TaskAttemptKillEvent;
 import org.apache.hadoop.util.StringInterner;
+import org.apache.hadoop.util.file.LogMessageFileWriter;
 import org.apache.hadoop.yarn.api.protocolrecords.AllocateResponse;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
@@ -72,6 +80,8 @@ import org.apache.hadoop.yarn.client.api.NMTokenCache;
 import org.apache.hadoop.yarn.exceptions.YarnRuntimeException;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
 import org.apache.hadoop.yarn.util.RackResolver;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -136,6 +146,9 @@ public class RMContainerAllocator extends RMContainerRequestor
   private int rackLocalAssigned = 0;
   private int lastCompletedTasks = 0;
   
+  // Yehia Elshater
+  private int gain = 0; //defined to calculate the gain of the new replicas 
+  
   private boolean recalculateReduceSchedule = false;
   private int mapResourceReqt;//memory
   private int reduceResourceReqt;//memory
@@ -146,15 +159,20 @@ public class RMContainerAllocator extends RMContainerRequestor
   private float reduceSlowStart = 0;
   private long retryInterval;
   private long retrystartTime;
+  private String logDir = "/var/log/hadoop/drm/";
 
   BlockingQueue<ContainerAllocatorEvent> eventQueue
     = new LinkedBlockingQueue<ContainerAllocatorEvent>();
 
   private ScheduleStats scheduleStats = new ScheduleStats();
+  
+  private static volatile HashMap<String, HashSet<String>> newBlocks = new HashMap<>();
 
   public RMContainerAllocator(ClientService clientService, AppContext context) {
     super(clientService, context);
     this.stopped = new AtomicBoolean(false);
+    LogManager.getRootLogger().setLevel(Level.DEBUG);
+
   }
 
   @Override
@@ -255,6 +273,20 @@ public class RMContainerAllocator extends RMContainerRequestor
     }
     super.serviceStop();
     scheduleStats.log("Final Stats: ");
+    logOnDisk();
+    
+  }
+  private void logOnDisk () {
+	  String logMessage ="Job: " + this.getJob().getID().toString() + " HostLocal:" + hostLocalAssigned + " RackLocal:" + rackLocalAssigned + " gain " + gain ;
+	  LOG.error(logMessage);
+	  BufferedWriter bw = null;
+	  try {
+		bw = new BufferedWriter(new FileWriter(new File(logDir + "locality.log"),true));
+		bw.write(logMessage + "\n");
+		bw.close();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
   }
 
   public boolean getIsReduceStarted() {
@@ -587,6 +619,8 @@ public class RMContainerAllocator extends RMContainerRequestor
     }
     int newHeadRoom = getAvailableResources() != null ? getAvailableResources().getMemory() : 0;
     List<Container> newContainers = response.getAllocatedContainers();
+    newBlocks.putAll(response.getNewBlocks());
+    
     // Setting NMTokens
     if (response.getNMTokens() != null) {
       for (NMToken nmToken : response.getNMTokens()) {
@@ -710,6 +744,11 @@ public class RMContainerAllocator extends RMContainerRequestor
     private final LinkedHashMap<TaskAttemptId, ContainerRequest> reduces = 
       new LinkedHashMap<TaskAttemptId, ContainerRequest>();
     
+    
+    // created by Yehia Elshater
+    private final Map<String,TaskSplitMetaInfo> taskAttemptBlocksMap = 
+    		new HashMap<String,TaskSplitMetaInfo>();
+    
     boolean remove(TaskAttemptId tId) {
       ContainerRequest req = null;
       if (tId.getTaskId().getTaskType().equals(TaskType.MAP)) {
@@ -738,6 +777,12 @@ public class RMContainerAllocator extends RMContainerRequestor
     }
     
     void addMap(ContainerRequestEvent event) {
+      LogMessageFileWriter.writeLogMessage("in addMap");
+      TaskSplitMetaInfo splitMetaInfo = event.getTaskSplitMetaInfo();
+      if (splitMetaInfo!=null){
+    	  taskAttemptBlocksMap.put(event.getAttemptID().toString(), splitMetaInfo);
+      }
+    	
       ContainerRequest request = null;
       
       if (event.getEarlierAttemptFailed()) {
@@ -1009,10 +1054,64 @@ public class RMContainerAllocator extends RMContainerRequestor
       return assigned;
     }
     
+    
+    
+    private String extractSplitId (TaskSplitMetaInfo metaInfo) {
+    	String filePath = metaInfo.getSplitLocation();
+    	String blockId = filePath.substring(0,filePath.lastIndexOf(':'));
+    	return blockId + "_" + metaInfo.getStartOffset(); 
+    }
+    
     @SuppressWarnings("unchecked")
     private void assignMapsWithLocality(List<Container> allocatedContainers) {
-      // try to assign to all nodes first to match node local
+      // try to assign to all nodes first to match node with new replicas first
       Iterator<Container> it = allocatedContainers.iterator();
+      Iterator<TaskAttemptId> scheduledMaps = maps.keySet().iterator();
+      
+      while (it.hasNext() && maps.size() > 0) {
+		Container allocated = it.next();
+		Priority priority = allocated.getPriority();
+        assert PRIORITY_MAP.equals(priority);
+        String host = allocated.getNodeId().getHost();
+        //LinkedList<TaskAttemptId> list = mapsHostMapping.get(host);
+        while (scheduledMaps.hasNext()) {
+            if (LOG.isDebugEnabled()) {
+              LOG.debug("Host matched to the request list " + host);
+            }
+            TaskAttemptId tId = scheduledMaps.next();
+            if (taskAttemptBlocksMap.containsKey(tId.toString()) && taskAttemptBlocksMap.get(tId.toString())!=null) { 
+	            TaskSplitMetaInfo taskSplitMetaInfo = taskAttemptBlocksMap.get(tId.toString());
+	            String splitId = extractSplitId(taskSplitMetaInfo);
+	            HashSet<String> currentReplicaHosts = new HashSet<String>();
+	            if (newBlocks.containsKey(splitId)) {
+	            	currentReplicaHosts = new HashSet<String>(newBlocks.get(splitId));
+	            	HashSet<String> originalHosts = new HashSet<String>(Arrays.asList(taskSplitMetaInfo.getLocations()));
+	            	currentReplicaHosts.removeAll(originalHosts); //removing the original hosts to get the new hosts only
+	            	LOG.info("new hosts " + currentReplicaHosts);
+	            	LOG.info(allocated.getNodeId());
+	            }
+	            
+	            if (maps.containsKey(tId) && currentReplicaHosts.contains(allocated.getNodeId().getHost())) {
+	              ContainerRequest assigned = maps.remove(tId);
+	              containerAssigned(allocated, assigned);
+	              it.remove();
+	              JobCounterUpdateEvent jce =
+	                new JobCounterUpdateEvent(assigned.attemptID.getTaskId().getJobId());
+	              jce.addCounterUpdate(JobCounter.SLOTS_MILLIS_MAPS, 1);
+	              gain++;
+	              eventHandler.handle(jce);
+	              hostLocalAssigned++;
+	              if (LOG.isDebugEnabled()) {
+	                LOG.debug("Assigned based on host match " + host);
+	              }
+	              break;
+	            }
+            }
+          }
+        
+		}
+      
+      it = allocatedContainers.iterator();
       while(it.hasNext() && maps.size() > 0){
         Container allocated = it.next();        
         Priority priority = allocated.getPriority();
@@ -1220,7 +1319,7 @@ public class RMContainerAllocator extends RMContainerRequestor
     }
 
     public void log(String msgPrefix) {
-        LOG.info(msgPrefix + "PendingReds:" + numPendingReduces +
+        LOG.error(msgPrefix + "PendingReds:" + numPendingReduces +
         " ScheduledMaps:" + numScheduledMaps +
         " ScheduledReds:" + numScheduledReduces +
         " AssignedMaps:" + numAssignedMaps +
