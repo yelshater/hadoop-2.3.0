@@ -69,6 +69,7 @@ import org.apache.hadoop.mapreduce.jobhistory.TaskAttemptStartedEvent;
 import org.apache.hadoop.mapreduce.jobhistory.TaskAttemptUnsuccessfulCompletionEvent;
 import org.apache.hadoop.mapreduce.security.TokenCache;
 import org.apache.hadoop.mapreduce.security.token.JobTokenIdentifier;
+import org.apache.hadoop.mapreduce.split.JobSplit.TaskSplitMetaInfo;
 import org.apache.hadoop.mapreduce.v2.api.records.Avataar;
 import org.apache.hadoop.mapreduce.v2.api.records.Locality;
 import org.apache.hadoop.mapreduce.v2.api.records.Phase;
@@ -111,6 +112,7 @@ import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.util.StringInterner;
 import org.apache.hadoop.util.StringUtils;
+import org.apache.hadoop.util.file.LogMessageFileWriter;
 import org.apache.hadoop.yarn.api.ApplicationConstants.Environment;
 import org.apache.hadoop.yarn.api.records.ApplicationAccessType;
 import org.apache.hadoop.yarn.api.records.Container;
@@ -549,7 +551,31 @@ public abstract class TaskAttemptImpl implements
     //  instance variable.
     stateMachine = stateMachineFactory.make(this);
   }
-
+  
+  /***
+   * @author Yehia
+   * @param taskId
+   * @param i
+   * @param eventHandler
+   * @param taskAttemptListener
+   * @param jobFile
+   * @param partition
+   * @param conf
+   * @param dataLocalHosts
+   * @param jobToken
+   * @param credentials
+   * @param clock
+   * @param appContext
+   * @param metaInfo
+   */
+  private TaskSplitMetaInfo metaInfo;
+  public void setTaskSplitMetaInfo(TaskSplitMetaInfo metaInfo) {
+	  this.metaInfo = metaInfo;
+  }
+  public TaskSplitMetaInfo getMetaInfo() {
+	  return metaInfo;
+  }
+  
   private int getMemoryRequired(Configuration conf, TaskType taskType) {
     int memory = 1024;
     if (taskType == TaskType.MAP)  {
@@ -1363,11 +1389,18 @@ public abstract class TaskAttemptImpl implements
     LOG.info("TaskAttempt: [" + attemptId
         + "] using containerId: [" + container.getId() + " on NM: ["
         + StringInterner.weakIntern(container.getNodeId().toString()) + "]");
-    TaskAttemptStartedEvent tase =
+    /*TaskAttemptStartedEvent tase =
       new TaskAttemptStartedEvent(TypeConverter.fromYarn(attemptId),
           TypeConverter.fromYarn(attemptId.getTaskId().getTaskType()),
           launchTime, trackerName, httpPort, shufflePort, container.getId(),
-          locality.toString(), avataar.toString());
+          locality.toString(), avataar.toString());*/
+    /*if (metaInfo !=null && metaInfo.getSplitLocation()!=null)
+    	LogMessageFileWriter.writeLogMessage("/var/log/hadoop/drm/containerlog.log", "Going to launch " + metaInfo.getSplitLocation());*/
+    CustomTaskAttemptStartedEvent tase =
+    	      new CustomTaskAttemptStartedEvent(TypeConverter.fromYarn(attemptId),
+    	          TypeConverter.fromYarn(attemptId.getTaskId().getTaskType()),
+    	          launchTime, trackerName, httpPort, shufflePort, container.getId(),
+    	          locality.toString(), avataar.toString(),metaInfo);
     eventHandler.handle(
         new JobHistoryEvent(attemptId.getTaskId().getJobId(), tase));
   }
@@ -1445,12 +1478,20 @@ public abstract class TaskAttemptImpl implements
                 taskAttempt.attemptId, 
                 taskAttempt.resourceCapability));
       } else {
-        taskAttempt.eventHandler.handle(new ContainerRequestEvent(
+       /* taskAttempt.eventHandler.handle(new ContainerRequestEvent(
             taskAttempt.attemptId, taskAttempt.resourceCapability,
             taskAttempt.dataLocalHosts.toArray(
                 new String[taskAttempt.dataLocalHosts.size()]),
             taskAttempt.dataLocalRacks.toArray(
                 new String[taskAttempt.dataLocalRacks.size()])));
+    	  LogMessageFileWriter.writeLogMessage("Before taskAttempt.eventHandler.handle " );*/
+          taskAttempt.eventHandler.handle(new ContainerRequestEvent(
+                  taskAttempt.attemptId, taskAttempt.resourceCapability,
+                  taskAttempt.dataLocalHosts.toArray(
+                      new String[taskAttempt.dataLocalHosts.size()]),
+                  taskAttempt.dataLocalRacks.toArray(
+                      new String[taskAttempt.dataLocalRacks.size()]),taskAttempt.metaInfo));
+          
       }
     }
   }
