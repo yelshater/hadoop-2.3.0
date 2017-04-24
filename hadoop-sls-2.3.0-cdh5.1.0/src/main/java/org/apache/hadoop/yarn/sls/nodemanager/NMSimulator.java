@@ -36,10 +36,10 @@ import org.apache.hadoop.yarn.api.records.ContainerStatus;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.server.api.protocolrecords.NodeHeartbeatRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords.NodeHeartbeatResponse;
-import org.apache.hadoop.yarn.server.api.protocolrecords
-        .RegisterNodeManagerRequest;
+import org.apache.hadoop.yarn.server.api.protocolrecords.RegisterNodeManagerRequest;
 import org.apache.hadoop.yarn.server.api.protocolrecords
         .RegisterNodeManagerResponse;
+import org.apache.hadoop.yarn.server.api.protocolrecords.impl.pb.RegisterNodeManagerRequestPBImpl;
 import org.apache.hadoop.yarn.server.api.records.MasterKey;
 import org.apache.hadoop.yarn.server.api.records.NodeAction;
 import org.apache.hadoop.yarn.server.api.records.NodeHealthStatus;
@@ -52,6 +52,7 @@ import org.apache.log4j.Logger;
 
 import org.apache.hadoop.yarn.sls.scheduler.ContainerSimulator;
 import org.apache.hadoop.yarn.sls.scheduler.TaskRunner;
+import org.apache.hadoop.yarn.sls.utils.MeasuresWriter;
 import org.apache.hadoop.yarn.sls.utils.SLSUtils;
 
 public class NMSimulator extends TaskRunner.Task {
@@ -70,6 +71,7 @@ public class NMSimulator extends TaskRunner.Task {
   // heart beat response id
   private int RESPONSE_ID = 1;
   private final static Logger LOG = Logger.getLogger(NMSimulator.class);
+  private String nodeId ;
   
   public void init(String nodeIdStr, int memory, int cores,
           int dispatchTime, int heartBeatInterval, ResourceManager rm)
@@ -78,8 +80,11 @@ public class NMSimulator extends TaskRunner.Task {
             heartBeatInterval);
     // create resource
     String rackHostName[] = SLSUtils.getRackHostName(nodeIdStr);
+    this.nodeId = nodeIdStr;
     this.node = NodeInfo.newNodeInfo(rackHostName[0], rackHostName[1], 
                   BuilderUtils.newResource(memory, cores));
+    //added for issue #32
+    this.node.setRackName(rackHostName[0]);
     this.rm = rm;
     // init data structures
     completedContainerList =
@@ -91,12 +96,24 @@ public class NMSimulator extends TaskRunner.Task {
             Collections.synchronizedList(new ArrayList<ContainerId>());
     runningContainers =
             new ConcurrentHashMap<ContainerId, ContainerSimulator>();
+    
+ /*  completedContainerList =
+            new ArrayList<ContainerId>();
+    releasedContainerList =
+            new ArrayList<ContainerId>();
+    containerQueue = new DelayQueue<ContainerSimulator>();
+    amContainerList =
+            new ArrayList<ContainerId>();
+    runningContainers =
+            new ConcurrentHashMap<ContainerId, ContainerSimulator>();*/
     // register NM with RM
+    
     RegisterNodeManagerRequest req =
             Records.newRecord(RegisterNodeManagerRequest.class);
     req.setNodeId(node.getNodeID());
     req.setResource(node.getTotalCapability());
     req.setHttpPort(80);
+    //req.setRackName( rackHostName[0]);
     RegisterNodeManagerResponse response = rm.getResourceTrackerService()
             .registerNodeManager(req);
     masterKey = response.getNMTokenMasterKey();
@@ -106,6 +123,14 @@ public class NMSimulator extends TaskRunner.Task {
   public void firstStep() throws YarnException, IOException {
     // do nothing
   }
+  
+  
+private static StringBuffer containersDistribution = new StringBuffer();
+private int maxBlockBudget;
+private double scoreThreshold;
+private String replicaPlacementPolicy;
+
+
 
   @Override
   public void middleStep() {
@@ -117,6 +142,25 @@ public class NMSimulator extends TaskRunner.Task {
         completedContainerList.add(cs.getId());
         LOG.debug(MessageFormat.format("Container {0} has completed",
                 cs.getId()));
+        
+        /*****Generating statistics about the containers distributions allocated in the current NodeManager***/
+        //if (cs.getPriority() == 20){
+	        containersDistribution.append(cs.getJobId()).append("^");
+	        containersDistribution.append(cs.getTaskAttemptId()).append("^");
+	        if (cs.getSplitId()!=null && !cs.getSplitId().isEmpty())
+	        	containersDistribution.append(cs.getSplitId()).append("^");
+	        else
+	        	containersDistribution.append("None").append("^");
+	        containersDistribution.append(nodeId.split("/")[2]).append("^");
+	        containersDistribution.append(cs.getHostname().split("/")[2]).append("^");
+	        containersDistribution.append(cs.getLocalityType()).append("^");
+	        containersDistribution.append(maxBlockBudget).append("^");
+	        containersDistribution.append(scoreThreshold).append("^");
+	        containersDistribution.append(cs.getPriority()).append("^");
+	        containersDistribution.append(replicaPlacementPolicy);
+	        containersDistribution.append(System.getProperty("line.separator"));
+	        //containersDistribution.append(cs.getPreferedLocations()).append(System.getProperty("line.separator"));
+        //}
       }
     }
     
@@ -168,7 +212,7 @@ public class NMSimulator extends TaskRunner.Task {
 
   @Override
   public void lastStep() {
-    // do nothing
+	  
   }
 
   /**
@@ -203,7 +247,7 @@ public class NMSimulator extends TaskRunner.Task {
         LOG.debug(MessageFormat.format("NodeManager {0} released container" +
                 " ({1}).", node.getNodeID(), cId));
         csList.add(newContainerStatus(
-                cId, ContainerState.COMPLETE, ContainerExitStatus.ABORTED));
+                cId, ContainerState.COMPLETE, ContainerExitStatus.ABORTED)); // TODO changed from aborted to success
       }
       releasedContainerList.clear();
     }
@@ -227,7 +271,9 @@ public class NMSimulator extends TaskRunner.Task {
   /**
    * launch a new container with the given life time
    */
-  public void addNewContainer(Container container, long lifeTimeMS) {
+  
+  /**TODO: change the signature of this method **/
+  public void addNewContainer(Container container, ContainerSimulator assignedCS, long lifeTimeMS) {
     LOG.debug(MessageFormat.format("NodeManager {0} launches a new " +
             "container ({1}).", node.getNodeID(), container.getId()));
     if (lifeTimeMS != -1) {
@@ -235,6 +281,18 @@ public class NMSimulator extends TaskRunner.Task {
       ContainerSimulator cs = new ContainerSimulator(container.getId(),
               container.getResource(), lifeTimeMS + System.currentTimeMillis(),
               lifeTimeMS);
+      
+      if(assignedCS !=null) {
+    	  cs.setPriority(container.getPriority().getPriority());
+    	  cs.setLocalityType(assignedCS.getLocalityType());
+      	  cs.setJobId(assignedCS.getJobId());
+      	  cs.setFileName(assignedCS.getFileName());
+      	  cs.setSplitId(assignedCS.getSplitId());
+      	  cs.setHostName(assignedCS.getHostname());
+      	  cs.setTaskAttemptId(assignedCS.getTaskAttemptId());
+      	  cs.setPreferedLocations(assignedCS.getPreferedLocations());
+      	  cs.setOriginalLocality(assignedCS.getOriginalLocality());
+      }
       containerQueue.add(cs);
       runningContainers.put(cs.getId(), cs);
     } else {
@@ -257,5 +315,26 @@ public class NMSimulator extends TaskRunner.Task {
     synchronized(completedContainerList) {
       completedContainerList.add(containerId);
     }
+    synchronized (containersDistribution) {
+		MeasuresWriter.writeMeasures("src/test/resources/containers_dist.csv", containersDistribution.toString(), true);
+	}
   }
+
+public void setMaxBudget(int maxBlockBudget) {
+	this.maxBlockBudget = maxBlockBudget;
+}
+
+public void setZScoreThreshold(double scoreThreshold) {
+	this.scoreThreshold = scoreThreshold;
+}
+
+public String getReplicaPlacementPolicy() {
+	return replicaPlacementPolicy;
+}
+
+public void setReplicaPlacementPolicy(String replicaPlacementPolicy) {
+	this.replicaPlacementPolicy = replicaPlacementPolicy;
+}
+
+
 }
