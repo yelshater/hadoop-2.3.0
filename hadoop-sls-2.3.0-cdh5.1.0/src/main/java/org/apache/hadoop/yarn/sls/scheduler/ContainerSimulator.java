@@ -18,11 +18,13 @@
 
 package org.apache.hadoop.yarn.sls.scheduler;
 
+import java.util.HashMap;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.CustomYLocSimFairScheduler.LocalityType;
 
 public class ContainerSimulator implements Delayed {
   // id
@@ -39,8 +41,44 @@ public class ContainerSimulator implements Delayed {
   private int priority;
   // type 
   private String type;
+  
+  private HashMap<String,String> preferedLocations ;
+  
+  private LocalityType originalLocality;
+  
+  private String fileName ;
+  private String splitId;
+  
+  private String taskId ;
+  private String taskAttemptId;
+  private String jobId;
+  private LocalityType localityType;
 
-  /**
+  public String getTaskId() {
+	return taskId;
+}
+
+public void setTaskId(String taskId) {
+	this.taskId = taskId;
+}
+
+public String getTaskAttemptId() {
+	return taskAttemptId;
+}
+
+public void setTaskAttemptId(String taskAttemptId) {
+	this.taskAttemptId = taskAttemptId;
+}
+
+public String getJobId() {
+	return jobId;
+}
+
+public void setJobId(String jobId) {
+	this.jobId = jobId;
+}
+
+/**
    * invoked when AM schedules containers to allocate
    */
   public ContainerSimulator(Resource resource, long lifeTime,
@@ -51,6 +89,50 @@ public class ContainerSimulator implements Delayed {
     this.priority = priority;
     this.type = type;
   }
+  
+  /***
+   * @author Yehia Elshater
+   * @param resource
+   * @param lifeTime
+   * @param hostname
+   * @param priority
+   * @param type
+   * @param preferredLocations
+   */
+  public ContainerSimulator(Resource resource, long lifeTime,
+	      String hostname, int priority, String type, HashMap<String,String> preferredLocations, String originalLocality) {
+	  	this(resource, lifeTime, hostname, priority, type);	    
+	  	this.setPreferedLocations(preferredLocations);
+		if (originalLocality.equals("NODE_LOCAL")) {
+			this.originalLocality = LocalityType.NODE_LOCAL;
+		}
+		else if (originalLocality.equals("OFF_SWITCH")) {
+			this.originalLocality = LocalityType.OFF_SWITCH;
+		}
+		else {
+			this.originalLocality = LocalityType.RACK_LOCAL;
+		}
+	  }
+  
+  /***
+   * @author Yehia Elshater
+   * @param resource
+   * @param lifeTime
+   * @param hostname
+   * @param priority
+   * @param type
+   * @param preferredLocations
+   * @param taskId
+   * @param taskAttemptId
+   * @param jobId
+   */
+  public ContainerSimulator(Resource resource, long lifeTime,
+	      String hostname, int priority, String type, HashMap<String,String> preferredLocations, String jobId, String taskId , String taskAttemptId, String originalLocality ) {
+		  	this(resource, lifeTime, hostname, priority, type, preferredLocations,originalLocality);
+		  	this.jobId = jobId;
+		  	this.taskId = taskId;
+		  	this.taskAttemptId = taskAttemptId;
+	  }
 
   /**
    * invoke when NM schedules containers to run
@@ -91,6 +173,10 @@ public class ContainerSimulator implements Delayed {
     return lifeTime;
   }
   
+  public void setLifeTime(long newLifeTime) {
+	  this.lifeTime = newLifeTime;
+  }
+  
   public String getHostname() {
     return hostname;
   }
@@ -110,4 +196,58 @@ public class ContainerSimulator implements Delayed {
   public void setPriority(int p) {
     priority = p;
   }
+
+public HashMap<String,String> getPreferedLocations() {
+	return preferedLocations;
+}
+
+public void setPreferedLocations(HashMap<String,String> preferedLocations) {
+	this.preferedLocations = preferedLocations;
+}
+
+public LocalityType getOriginalLocality() {
+	return originalLocality;
+}
+
+public void setOriginalLocality(LocalityType originalLocality) {
+	if (originalLocality.equals("NODE_LOCAL")) {
+		this.originalLocality = LocalityType.NODE_LOCAL;
+	}
+	else if (originalLocality.equals("OFF_SWITCH")) {
+		this.originalLocality = LocalityType.OFF_SWITCH;
+	}
+	else {
+		this.originalLocality = LocalityType.RACK_LOCAL;
+	}
+}
+
+public String getFileName() {
+	return fileName;
+}
+
+public void setFileName(String fileSplitName) {
+	this.fileName = fileSplitName;
+}
+
+public String getSplitId() {
+	return splitId;
+}
+
+public void setSplitId(String splitId) {
+	this.splitId = splitId;
+}
+
+
+public void setHostName(String hostname) {
+	this.hostname = hostname;
+}
+
+public LocalityType getLocalityType() {
+	return localityType;
+}
+
+public void setLocalityType(LocalityType localityType) {
+	this.localityType = localityType;
+}
+
 }
