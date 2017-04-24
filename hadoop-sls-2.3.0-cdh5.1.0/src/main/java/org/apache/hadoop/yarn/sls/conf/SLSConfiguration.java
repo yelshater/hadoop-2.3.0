@@ -64,5 +64,25 @@ public class SLSConfiguration {
   public static final int CONTAINER_MEMORY_MB_DEFAULT = 1024;
   public static final String CONTAINER_VCORES = CONTAINER_PREFIX + "vcores";
   public static final int CONTAINER_VCORES_DEFAULT = 1;
+  
+  
+  //public static final int REMOTE_CONTAINER_DELAY_MS = 1000; //delay 1 second for each remote container simulator
+  public static final int REMOTE_CONTAINER_DELAY_MS = 4000;
+  
+  public static final float REMOTE_CONTAINER_DELAY_RATIO = 0.2f; //delay ratio 
+  public static final int BLOCK_SIZE = 64; //SIZE IN MB
+  
+  public static final String EOL = System.getProperty("line.separator");
+  
+  
+  
+ //ylocsim configurations
+  public static final String YLOC_SIM_ROOT ="ylocsim";
+  public static final String SLS_CONF_ROOT ="sls";
+  public static final String SLS_ORIGINAL_TRACE_FILE ="sls_original_trace_file";
+  public static final String SLS_OUTPUT_FOLDER ="sls_output_folder";
+  public static final String NEW_SLS_TRACE_FILE ="new_sls_trace_file";
+  public static final String INPUT_FILES_INFO ="input_files_info";
+ 
 
 }
