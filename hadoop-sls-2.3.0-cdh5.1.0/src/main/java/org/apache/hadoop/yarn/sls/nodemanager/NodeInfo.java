@@ -163,6 +163,12 @@ public class NodeInfo {
     public void setResourceOption(ResourceOption resourceOption) {
       perNode = resourceOption;
     }
+
+	@Override
+	public void setRackName(String rackName) {
+		// TODO Auto-generated method stub
+		
+	}
   }
   
   public static RMNode newNodeInfo(String rackName, String hostName,
