@@ -522,4 +522,49 @@ private ResourceRequest packageReduceRequest(int priority,
   public int getNumTasks() {
     return totalContainers;
   }
+
+protected int getActualNumberOfContainers() {
+	return actualNumberOfContainers;
+}
+
+protected void setActualNumberOfContainers(int actualNumberOfContainers) {
+	this.actualNumberOfContainers = actualNumberOfContainers;
+}
+
+public String getAmContainerNode() {
+	return amContainerNode;
+}
+
+public void setAmContainerNode(String amContainerNode) {
+	this.amContainerNode = amContainerNode;
+}
+
+public String getCombinedId() {
+	return new StringBuilder().append(appId.toString()).append("_").append(oldAppId).toString();
+	//return new StringBuilder().append(appId.toString()).toString();
+}
+
+public String getOldId () {
+	return oldAppId;
+}
+
+private void initNetworkTopology(HashMap<String, String> topology) {
+  if (toplogyFilePath == null || toplogyFilePath.isEmpty()) {
+	  throw new IllegalArgumentException("Topology file path is not specified");
+  }
+  
+  List<TopologyLocation> locations =  SLSUtils.getTopologyLocationsFromFile(toplogyFilePath);
+  for (TopologyLocation tl : locations) {
+	  topology.put(tl.getNodeName(), tl.getRackName());
+  }
+
+}
+
+public String getToplogyFilePath() {
+	return toplogyFilePath;
+}
+
+public void setToplogyFilePath(String toplogyFilePath) {
+	this.toplogyFilePath = toplogyFilePath;
+}
 }
