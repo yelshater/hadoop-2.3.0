@@ -154,4 +154,10 @@ public class RMNodeWrapper implements RMNode {
     return node.getResourceOption();
   }
 
+@Override
+public void setRackName(String rackName) {
+	// TODO Auto-generated method stub
+	
+}
+
 }
