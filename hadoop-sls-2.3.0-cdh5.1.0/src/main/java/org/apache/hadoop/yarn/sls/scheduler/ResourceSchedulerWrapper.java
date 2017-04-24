@@ -115,8 +115,8 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
 
   private Configuration conf;
   private ResourceScheduler scheduler;
-  private Map<ApplicationAttemptId, String> appQueueMap =
-          new ConcurrentHashMap<ApplicationAttemptId, String>();
+  private Map<ApplicationId, String> appQueueMap =
+          new ConcurrentHashMap<ApplicationId, String>();
   private BufferedWriter jobRuntimeLogBW;
 
   // Priority of the ResourceSchedulerWrapper shutdown hook.
@@ -278,22 +278,22 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
       schedulerHandleCounter.inc();
       schedulerHandleCounterMap.get(schedulerEvent.getType()).inc();
 
-      if (schedulerEvent.getType() == SchedulerEventType.APP_ATTEMPT_REMOVED
-          && schedulerEvent instanceof AppAttemptRemovedSchedulerEvent) {
+      if (schedulerEvent.getType() == SchedulerEventType.APP_REMOVED
+          && schedulerEvent instanceof AppRemovedSchedulerEvent) {
         SLSRunner.decreaseRemainingApps();
-        AppAttemptRemovedSchedulerEvent appRemoveEvent =
-                (AppAttemptRemovedSchedulerEvent) schedulerEvent;
-        ApplicationAttemptId appAttemptId =
-                appRemoveEvent.getApplicationAttemptID();
-        appQueueMap.remove(appRemoveEvent.getApplicationAttemptID());
-      } else if (schedulerEvent.getType() == SchedulerEventType.APP_ATTEMPT_ADDED
-          && schedulerEvent instanceof AppAttemptAddedSchedulerEvent) {
-        AppAttemptAddedSchedulerEvent appAddEvent =
-                (AppAttemptAddedSchedulerEvent) schedulerEvent;
+        
+        AppRemovedSchedulerEvent appRemoveEvent =
+                (AppRemovedSchedulerEvent) schedulerEvent;
+        appQueueMap.remove(appRemoveEvent.getApplicationID());
+      } else if (schedulerEvent.getType() == SchedulerEventType.APP_ADDED
+          && schedulerEvent instanceof AppAddedSchedulerEvent) {
+        AppAddedSchedulerEvent appAddEvent =
+                (AppAddedSchedulerEvent) schedulerEvent;
         String queueName = appAddEvent.getQueue();
-        appQueueMap.put(appAddEvent.getApplicationAttemptId(), queueName);
+        appQueueMap.put(appAddEvent.getApplicationId(), queueName);
       }
     }
+    
   }
 
   private void updateQueueWithNodeUpdate(
@@ -313,7 +313,9 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
           continue;
         }
 
-        String queue = appQueueMap.get(containerId.getApplicationAttemptId());
+        String queue =
+            appQueueMap.get(containerId.getApplicationAttemptId()
+              .getApplicationId());
         int releasedMemory = 0, releasedVCores = 0;
         if (status.getExitStatus() == ContainerExitStatus.SUCCESS) {
           for (RMContainer rmc : app.getLiveContainers()) {
@@ -345,7 +347,7 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
     // update queue information
     Resource pendingResource = Resources.createResource(0, 0);
     Resource allocatedResource = Resources.createResource(0, 0);
-    String queueName = appQueueMap.get(attemptId);
+    String queueName = appQueueMap.get(attemptId.getApplicationId());
     // container requested
     for (ResourceRequest request : resourceRequests) {
       if (request.getResourceName().equals(ResourceRequest.ANY)) {
@@ -355,9 +357,11 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
       }
     }
     // container allocated
-    for (Container container : allocation.getContainers()) {
-      Resources.addTo(allocatedResource, container.getResource());
-      Resources.subtractFrom(pendingResource, container.getResource());
+    if (allocation != null && allocation.getContainers()!=null) {
+	    for (Container container : allocation.getContainers()) {
+	      Resources.addTo(allocatedResource, container.getResource());
+	      Resources.subtractFrom(pendingResource, container.getResource());
+	    }
     }
     // container released from AM
     SchedulerAppReport report = scheduler.getSchedulerAppInfo(attemptId);
@@ -386,29 +390,32 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
       }
     }
     // containers released/preemption from scheduler
+    
     Set<ContainerId> preemptionContainers = new HashSet<ContainerId>();
-    if (allocation.getContainerPreemptions() != null) {
-      preemptionContainers.addAll(allocation.getContainerPreemptions());
-    }
-    if (allocation.getStrictContainerPreemptions() != null) {
-      preemptionContainers.addAll(allocation.getStrictContainerPreemptions());
-    }
-    if (! preemptionContainers.isEmpty()) {
-      for (ContainerId containerId : preemptionContainers) {
-        if (! preemptionContainerMap.containsKey(containerId)) {
-          Container container = null;
-          for (RMContainer c : report.getLiveContainers()) {
-            if (c.getContainerId().equals(containerId)) {
-              container = c.getContainer();
-              break;
-            }
-          }
-          if (container != null) {
-            preemptionContainerMap.put(containerId, container.getResource());
-          }
-        }
-
-      }
+    if (allocation != null) {
+	    if (allocation.getContainerPreemptions() != null) {
+	      preemptionContainers.addAll(allocation.getContainerPreemptions());
+	    }
+	    if (allocation.getStrictContainerPreemptions() != null) {
+	      preemptionContainers.addAll(allocation.getStrictContainerPreemptions());
+	    }
+	    if (! preemptionContainers.isEmpty()) {
+	      for (ContainerId containerId : preemptionContainers) {
+	        if (! preemptionContainerMap.containsKey(containerId)) {
+	          Container container = null;
+	          for (RMContainer c : report.getLiveContainers()) {
+	            if (c.getContainerId().equals(containerId)) {
+	              container = c.getContainer();
+	              break;
+	            }
+	          }
+	          if (container != null) {
+	            preemptionContainerMap.put(containerId, container.getResource());
+	          }
+	        }
+	
+	      }
+	    }
     }
 
     // update metrics
@@ -439,13 +446,140 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
     }
   }
 
-  private void tearDown() throws IOException {
+  private void tearDown()  {
+    if (scheduler instanceof CustomYLocSimFairScheduler) {
+	  DescriptiveStatistics mapsStats = new DescriptiveStatistics();
+	  DescriptiveStatistics allContainersStats = new DescriptiveStatistics();
+	  CustomYLocSimFairScheduler cScheduler = (CustomYLocSimFairScheduler) scheduler;
+	  ConcurrentHashMap<String, Integer> nodesMaps = cScheduler.getNodeMapsMetric();
+	  ConcurrentHashMap<String, Integer> nodesReducers = cScheduler.getNodeReduceMetric();
+	  HashMap <String,Integer> totalContainersPerNode = new HashMap<>();
+	  for (Map.Entry<String, Integer> e : nodesMaps.entrySet()) {
+		  mapsStats.addValue(e.getValue());
+		  totalContainersPerNode.put(e.getKey(), e.getValue());
+	  }
+	  for (Map.Entry<String, Integer> e : nodesReducers.entrySet()) {
+		  totalContainersPerNode.put(e.getKey(), e.getValue() + (totalContainersPerNode.get(e.getKey()) == null ? 0 : totalContainersPerNode.get(e.getKey())));
+		  allContainersStats.addValue(totalContainersPerNode.get(e.getKey()));
+		  System.out.println("For node " + e.getKey() + " Total number of containers " + totalContainersPerNode.get(e.getKey()));
+	  }
+		  
+	  System.out.println(cScheduler.getConf().get(CustomYLocSimFairScheduler.INPUT_FILE_TRACE));
+	  
+	   StringBuffer header = new StringBuffer();
+	   header.append("MAX_BLOCK_BUDGET_KEY").append(",");
+	   header.append("SCORE_THRESHOLD_KEY").append(",");
+	   header.append("NODE_SELECTION_KEY").append(",");
+	   header.append("TOPOLOGY_FILE_PATH").append(",");
+	   header.append("INPUT_FILE_TRACE").append(",");
+	   header.append("locality.node").append(",");
+	   header.append("locality.rack").append(",");
+	   header.append("locality.off").append(",");
+	   header.append("lambdaMaps").append(",");
+	   header.append("lambdaAll").append(",");
+	   header.append("mapsStats.getSkewness").append(",");
+	   header.append("allContainersStats.getSkewness()").append(",");
+	   header.append("mapsStats.getKurtosis()").append(",");
+	   header.append("allContainersStats.getKurtosis()").append(",");
+	   header.append("traceTime").append(",");
+	   header.append("simulatedTime").append(",");
+	   header.append("DRMLocalCopies").append(",");
+	   header.append("DRMRackCopies").append(",");
+	   header.append("DRMOffSwitchCopies").append(",");
+	   header.append("gain").append(",");
+	   header.append("TotalCopies").append(",");
+	   header.append("LOCALITY_DELAY_NODE_MS").append(",");
+	   header.append("LOCALITY_DELAY_RACK_MS").append(",");
+	   header.append("IS_DIST_DATA_ENABLED").append(",");
+	   header.append("CPU").append(",");
+	   header.append("MEMORY");
+	   
+	   header.append(System.getProperty("line.separator"));
+	   
+	   final String outputFilePath = "src/test/resources/threshold_scalability.csv";
+	   File outputFile = new File(outputFilePath);
+	   
+	   if (!outputFile.exists()) {
+		   try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+			   bw.write(header.toString());
+			   bw.flush();
+			   bw.close();
+		   }
+		   catch (Exception x ) {
+			  x.printStackTrace();
+		   }
+	   }
+	   try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/test/resources/threshold_scalability.csv",true))) {
+		   StringBuffer sb = new StringBuffer();
+		   sb.append(System.getProperty("line.separator"));
+		   sb.append(this.getConf().get(CustomYLocSimFairScheduler.MAX_BLOCK_BUDGET_KEY)).append(",");
+		   sb.append(this.getConf().get(CustomYLocSimFairScheduler.SCORE_THRESHOLD_KEY)).append(",");
+		   sb.append(this.getConf().get(CustomYLocSimFairScheduler.NODE_SELECTION_KEY)).append(",");
+		   String topologyFilePath = this.getConf().get(CustomYLocSimFairScheduler.TOPOLOGY_FILE_PATH);
+		   sb.append(topologyFilePath.substring(topologyFilePath.lastIndexOf("/") + 1, topologyFilePath.length())).append(",");
+		   sb.append(this.getConf().get(CustomYLocSimFairScheduler.INPUT_FILE_TRACE)).append(",");
+		   sb.append(metrics.getGauges().get("variable.queue.default.locality.node").getValue()).append(",");
+		   sb.append(metrics.getGauges().get("variable.queue.default.locality.rack").getValue()).append(",");
+		   sb.append(metrics.getGauges().get("variable.queue.default.locality.off").getValue()).append(",");
+		   double lambdaMaps = (mapsStats.getMax() / mapsStats.getMean()) - 1;
+		   double lambdaAll = (allContainersStats.getMax() / allContainersStats.getMean()) - 1;
+		   sb.append(lambdaMaps).append(",");
+		   sb.append(lambdaAll).append(",");
+		   sb.append(mapsStats.getSkewness()).append(",");
+		   sb.append(allContainersStats.getSkewness()).append(",");
+		   sb.append(mapsStats.getKurtosis()).append(",");
+		   sb.append(allContainersStats.getKurtosis()).append(",");
+		   sb.append(traceTimeMap.get(topologyFilePath)).append(",");
+		   sb.append(simulatedTimeMap.get(topologyFilePath));
+		   sb.append(",").append(cScheduler.getDRMLocalCopies());
+		   sb.append(",").append(cScheduler.getDRMRackCopies());
+		   sb.append(",").append(cScheduler.getDRMOffSwitchCopies());
+		   sb.append(",").append(cScheduler.getGain());
+		   sb.append(",").append(cScheduler.getTotalCopies());
+		   sb.append(",").append(this.getConf().get("yarn.scheduler.fair.locality-delay-node-ms"));
+		   sb.append(",").append(this.getConf().get("yarn.scheduler.fair.locality-delay-rack-ms"));
+		   sb.append(",").append(this.getConf().get(CustomYLocSimFairScheduler.IS_DISTRIBUTE_DATA_ENABLED));
+		   sb.append(",").append(this.getConf().get(CustomYLocSimFairScheduler.CPU));
+		   sb.append(",").append(this.getConf().get(CustomYLocSimFairScheduler.MEMORY));
+		   bw.write(sb.toString());
+		   bw.close();
+		   
+	   }
+	   catch (Exception x ) {
+		   x.printStackTrace();
+	   }
+	   if (schedulerMetrics.metrics.getGauges().containsKey("variable.queue.default.locality.node")) {
+	    	System.out.println("schedulerMetrics "  + (Integer)metrics.getGauges().get("variable.queue.default.locality.node").getValue());
+	    	System.out.println("schedulerMetrics "  + (Integer)metrics.getGauges().get("variable.queue.default.locality.rack").getValue());
+	    	System.out.println("schedulerMetrics "  + (Integer)metrics.getGauges().get("variable.queue.default.locality.off").getValue());
+	    }
+	   
+	   cScheduler.clearLocalityStatistics();
+   }
+   
+   
+   
+   
     // close job runtime writer
     if (jobRuntimeLogBW != null) {
-      jobRuntimeLogBW.close();
+      try {
+		jobRuntimeLogBW.close();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
     }
     // shut pool
     if (pool != null)  pool.shutdown();
+    running = false;
+    try {
+		web.stop();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+    if (rmContext!= null && !rmContext.getClientRMService().isInState(Service.STATE.STOPPED))
+    	this.rmContext.getClientRMService().stop();
+   
+    
   }
 
   @SuppressWarnings("unchecked")
@@ -463,6 +597,10 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
             Class.forName(schedulerMetricsType);
     schedulerMetrics = (SchedulerMetrics)ReflectionUtils
             .newInstance(schedulerMetricsClass, new Configuration());
+    if (schedulerMetrics instanceof CustomFairSchedulerMetrics ) {
+    	System.out.println("schedulerMetrics CustomFairSchedulerMetrics");
+    	schedulerMetrics = (CustomFairSchedulerMetrics)schedulerMetrics;
+    }
     schedulerMetrics.init(scheduler, metrics);
 
     // register various metrics
@@ -489,9 +627,11 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
 
     // application running information
     jobRuntimeLogBW = new BufferedWriter(
-            new FileWriter(metricsOutputDir + "/jobruntime.csv"));
-    jobRuntimeLogBW.write("JobID,real_start_time,real_end_time," +
-            "simulate_start_time,simulate_end_time" + EOL);
+            new FileWriter(metricsOutputDir + "/jobruntime.csv",true));
+    
+    System.out.println("metricsOutputDir " + metricsOutputDir);
+/*    jobRuntimeLogBW.write("JobID,real_start_time,real_end_time," +
+            "simulate_start_time,simulate_end_time,block_budget,score_threshold" + EOL);*/
     jobRuntimeLogBW.flush();
   }
 
@@ -666,6 +806,13 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
             && ! dir.mkdirs()) {
       LOG.error("Cannot create directory " + dir.getAbsoluteFile());
     }
+    System.out.println(metrics.getGauges().keySet());
+    try {
+    	FileUtils.cleanDirectory(new File(metricsOutputDir + "/metrics"));
+    }
+    catch (IOException ex) {
+    	
+    }
     final CsvReporter reporter = CsvReporter.forRegistry(metrics)
             .formatFor(Locale.US)
             .convertRatesTo(TimeUnit.SECONDS)
@@ -722,20 +869,34 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
     }
   }
 
+  private ConcurrentHashMap<String, Long> simulatedTimeMap = new ConcurrentHashMap<>();
+  private ConcurrentHashMap<String, Long> traceTimeMap = new ConcurrentHashMap<>();
   // the following functions are used by AMSimulator
   public void addAMRuntime(ApplicationId appId,
                            long traceStartTimeMS, long traceEndTimeMS,
                            long simulateStartTimeMS, long simulateEndTimeMS) {
-
+	
+	String topologyFilePath =  this.getConf().get(CustomYLocSimFairScheduler.TOPOLOGY_FILE_PATH);
+	
     try {
       // write job runtime information
+      simulatedTimeMap.put(topologyFilePath, simulateEndTimeMS);
+      System.out.println("simulateEndTimeMS " + simulateEndTimeMS);
+      traceTimeMap.put(topologyFilePath, traceEndTimeMS);
       StringBuilder sb = new StringBuilder();
       sb.append(appId).append(",").append(traceStartTimeMS).append(",")
               .append(traceEndTimeMS).append(",").append(simulateStartTimeMS)
-              .append(",").append(simulateEndTimeMS);
+              .append(",").append(simulateEndTimeMS)
+              .append(",").append(this.getConf().get(CustomYLocSimFairScheduler.MAX_BLOCK_BUDGET_KEY))
+              .append(",").append(this.getConf().get(CustomYLocSimFairScheduler.SCORE_THRESHOLD_KEY))
+      		  .append(",").append(topologyFilePath).append(",");
+      sb.append(metrics.getGauges().get("variable.queue.default.locality.node").getValue()).append(",");
+	  sb.append(metrics.getGauges().get("variable.queue.default.locality.rack").getValue()).append(",");
+	  sb.append(metrics.getGauges().get("variable.queue.default.locality.off").getValue());
       jobRuntimeLogBW.write(sb.toString() + EOL);
       jobRuntimeLogBW.flush();
-    } catch (IOException e) {
+    }
+    catch (IOException e) {
       e.printStackTrace();
     }
   }
@@ -875,5 +1036,31 @@ public class ResourceSchedulerWrapper extends AbstractYarnScheduler implements
   public List<ApplicationAttemptId> getAppsInQueue(String queue) {
     return scheduler.getAppsInQueue(queue);
   }
+
+  @Override
+  public RMContainer getRMContainer(ContainerId containerId) {
+    return null;
+  }
+
+  @Override
+  public String moveApplication(ApplicationId appId, String newQueue)
+      throws YarnException {
+    return scheduler.moveApplication(appId, newQueue);
+  }
+  @Override
+	public synchronized List<Container> getTransferredContainers(
+			ApplicationAttemptId currentAttempt) {
+	  return ((AbstractYarnScheduler) scheduler).getTransferredContainers(currentAttempt);
+	}
+
+  @Override
+  public Map<ApplicationId, SchedulerApplication> getSchedulerApplications() {
+	     return ((AbstractYarnScheduler) scheduler).getSchedulerApplications();
+  }
+  
+  public ResourceScheduler getScheduler() {
+	  return scheduler;
+  }
+  
 }
 

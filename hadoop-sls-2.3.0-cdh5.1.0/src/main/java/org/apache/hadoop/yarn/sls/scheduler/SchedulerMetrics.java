@@ -97,4 +97,8 @@ public abstract class SchedulerMetrics {
   public Set<String> getQueueTrackedMetrics() {
     return queueTrackedMetrics;
   }
+  
+  public MetricRegistry getMetrics() {
+	  return metrics;
+  }
 }
