@@ -23,14 +23,23 @@ import org.apache.hadoop.tools.rumen.JobTraceReader;
 import org.apache.hadoop.tools.rumen.LoggedJob;
 import org.apache.hadoop.tools.rumen.LoggedTask;
 import org.apache.hadoop.tools.rumen.LoggedTaskAttempt;
+import org.apache.hadoop.yarn.sls.conf.SLSConfiguration;
+import org.apache.hadoop.yarn.sls.scheduler.ContainerSimulator;
+import org.apache.hadoop.yarn.sls.types.TopologyLocation;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
@@ -40,7 +49,9 @@ public class SLSUtils {
 
   public static String[] getRackHostName(String hostname) {
     hostname = hostname.substring(1);
-    return hostname.split("/");
+	String [] rackHost = hostname.split("/");
+	rackHost[0] = "/" + rackHost[0];
+    return rackHost;
   }
 
   /**
@@ -118,7 +129,7 @@ public class SLSUtils {
               jsonF.createJsonParser(input), Map.class);
       while (i.hasNext()) {
         Map jsonE = i.next();
-        String rack = "/" + jsonE.get("rack");
+        String rack = "" + jsonE.get("rack");
         List tasks = (List) jsonE.get("nodes");
         for (Object o : tasks) {
           Map jsonNode = (Map) o;
@@ -130,4 +141,24 @@ public class SLSUtils {
     }
     return nodeSet;
   }
+  
+  /***
+	 * This method takes a topology json file and returns list of ToplogyLocations
+	 * @param jsonTopologyFilePath
+	 */
+	public static List<TopologyLocation> getTopologyLocationsFromFile(String jsonTopologyFilePath) {
+		List<TopologyLocation> topologyList = new ArrayList<>();
+		try {
+			Set<String> nodesSet = parseNodesFromNodeFile(jsonTopologyFilePath); 
+			for (String rackNode : nodesSet ) {
+				String rackName = "/" + rackNode.split("/")[1];
+				String nodeName = rackNode.split("/")[2];
+				topologyList.add(new TopologyLocation(nodeName, rackName));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return topologyList;
+	}
+
 }

@@ -41,10 +41,12 @@ import org.apache.hadoop.yarn.sls.SLSRunner;
 import org.apache.hadoop.yarn.sls.scheduler.FairSchedulerMetrics;
 import org.apache.hadoop.yarn.sls.scheduler.ResourceSchedulerWrapper;
 import org.apache.hadoop.yarn.sls.scheduler.SchedulerMetrics;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
+
 import org.mortbay.jetty.handler.ResourceHandler;
 
 public class SLSWebApp extends HttpServlet {
@@ -74,17 +76,23 @@ public class SLSWebApp extends HttpServlet {
   private String simulateInfoTemplate;
   private String simulateTemplate;
   private String trackTemplate;
+  private String localityTemplate;
 
   {
     // load templates
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
     try {
-      simulateInfoTemplate = FileUtils.readFileToString(new File(
-              cl.getResource("simulate.info.html.template").getFile()));
+     /* simulateInfoTemplate = FileUtils.readFileToString(new File(
+              cl.getResource("src/main/resources/simulate.info.html.template").getFile()));
       simulateTemplate = FileUtils.readFileToString(new File(
-              cl.getResource("simulate.html.template").getFile()));
+              cl.getResource("src/main/resources/simulate.html.template").getFile()));
       trackTemplate = FileUtils.readFileToString(new File(
-              cl.getResource("track.html.template").getFile()));
+              cl.getResource("src/main/resourcestrack.html.template").getFile()));*/
+      
+      simulateInfoTemplate = FileUtils.readFileToString(new File("src/main/resources/simulate.info.html.template"));
+      simulateTemplate = FileUtils.readFileToString(new File("src/main/resources/simulate.html.template"));
+      trackTemplate = FileUtils.readFileToString(new File("src/main/resources/track.html.template"));
+      localityTemplate = FileUtils.readFileToString(new File("src/main/resources/locality.html.template"));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -101,10 +109,10 @@ public class SLSWebApp extends HttpServlet {
     port = metricsAddressPort;
   }
 
-  public void start() throws Exception {
+  public void start(){
     // static files
     final ResourceHandler staticHandler = new ResourceHandler();
-    staticHandler.setResourceBase("html");
+    staticHandler.setResourceBase("src/main/resources/html");
 
     Handler handler = new AbstractHandler() {
       @Override
@@ -119,14 +127,19 @@ public class SLSWebApp extends HttpServlet {
             timeunit = 1000 * 60;
             timeunitLabel = "minute";
           }
-
+          response.addHeader("Access-Control-Allow-Origin", "*");
+          response.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+          response.addHeader("Access-Control-Allow-Headers", "x-requested-with, Content-Type, origin, authorization, accept, client-security-token");
+          
           // http request
           if (target.equals("/")) {
             printPageIndex(request, response);
           } else if (target.equals("/simulate")) {
             printPageSimulate(request, response, timeunit, timeunitLabel);
           } else if (target.equals("/track")) {
-            printPageTrack(request, response, timeunit, timeunitLabel);
+            printPageTrack(request, response, timeunit, timeunitLabel, trackTemplate);
+          } else if (target.equals("/trackLocality")) {
+        	  printPageTrack(request, response, timeunit, timeunitLabel, localityTemplate);
           } else
             // js/css request
             if (target.startsWith("/js") || target.startsWith("/css")) {
@@ -134,7 +147,7 @@ public class SLSWebApp extends HttpServlet {
               staticHandler.handle(target, request, response, dispatch);
             } else
               // json request
-              if (target.equals("/simulateMetrics")) {
+              if (target.contains("/simulateMetrics")) {
                 printJsonMetrics(request, response);
               } else if (target.equals("/trackMetrics")) {
                 printJsonTrack(request, response);
@@ -146,15 +159,27 @@ public class SLSWebApp extends HttpServlet {
     };
 
     server = new Server(port);
+    
     server.setHandler(handler);
 
+    try {
+    if (server.isRunning()) {
+    	server.stop();
+    	Thread.sleep(3000);
+    }
     server.start();
+    }
+    catch (Exception x ) {
+    	System.err.println("Web Application is Already Started !");
+    }
   }
 
   public void stop() throws Exception {
+	  
     if (server != null) {
       server.stop();
     }
+
   }
 
   /**
@@ -240,7 +265,7 @@ public class SLSWebApp extends HttpServlet {
    */
   private void printPageTrack(HttpServletRequest request,
                                HttpServletResponse response, int timeunit,
-                               String timeunitLabel)
+                               String timeunitLabel, String templateContent)
           throws IOException {
     response.setContentType("text/html");
     response.setStatus(HttpServletResponse.SC_OK);
@@ -265,7 +290,7 @@ public class SLSWebApp extends HttpServlet {
     // time unit {3}
     // ajax update time {4}
     // final html
-    String trackInfo = MessageFormat.format(trackTemplate,
+    String trackInfo = MessageFormat.format(templateContent,
             trackedQueueInfo.toString(), trackedAppInfo.toString(),
             timeunitLabel, "" + timeunit, "" + ajaxUpdateTimeMS);
     response.getWriter().println(trackInfo);
@@ -404,13 +429,17 @@ public class SLSWebApp extends HttpServlet {
     // allocated resource for each queue
     Map<String, Double> queueAllocatedMemoryMap = new HashMap<String, Double>();
     Map<String, Long> queueAllocatedVCoresMap = new HashMap<String, Long>();
+    Map<String , Integer> queueNodeLocalityCounts = new HashMap<String, Integer>();
+    Map<String , Integer> queueRackLocalityCounts = new HashMap<String, Integer>();
+    Map<String , Integer> queueOffLocalityCounts = new HashMap<String, Integer>();
+    
     for (String queue : wrapper.getQueueSet()) {
       // memory
-      String key = "counter.queue." + queue + ".allocated.memory";
+      String counterKey = "counter.queue." + queue + ".allocated.memory";
       if (! queueAllocatedMemoryCounterMap.containsKey(queue) &&
-              metrics.getCounters().containsKey(key)) {
+              metrics.getCounters().containsKey(counterKey)) {
         queueAllocatedMemoryCounterMap.put(queue,
-                metrics.getCounters().get(key));
+                metrics.getCounters().get(counterKey));
       }
       double queueAllocatedMemoryGB =
               queueAllocatedMemoryCounterMap.containsKey(queue) ?
@@ -418,16 +447,26 @@ public class SLSWebApp extends HttpServlet {
                       : 0;
       queueAllocatedMemoryMap.put(queue, queueAllocatedMemoryGB);
       // vCores
-      key = "counter.queue." + queue + ".allocated.cores";
+      counterKey = "counter.queue." + queue + ".allocated.cores";
       if (! queueAllocatedVCoresCounterMap.containsKey(queue) &&
-              metrics.getCounters().containsKey(key)) {
+              metrics.getCounters().containsKey(counterKey)) {
         queueAllocatedVCoresCounterMap.put(
-                queue, metrics.getCounters().get(key));
+                queue, metrics.getCounters().get(counterKey));
       }
       long queueAllocatedVCores =
               queueAllocatedVCoresCounterMap.containsKey(queue) ?
                       queueAllocatedVCoresCounterMap.get(queue).getCount(): 0;
       queueAllocatedVCoresMap.put(queue, queueAllocatedVCores);
+      
+      counterKey = "variable.queue." + queue + ".locality.node";
+      Integer queueNodeLocalityCount = metrics.getGauges().containsKey(counterKey) ?  (Integer)metrics.getGauges().get(counterKey).getValue() : 0;
+      queueNodeLocalityCounts.put(queue, queueNodeLocalityCount.intValue());
+      counterKey = "variable.queue." + queue + ".locality.rack";
+      int queueRackLocalityCount = metrics.getGauges().containsKey(counterKey) ?  (int)metrics.getGauges().get(counterKey).getValue() : 0;
+      queueRackLocalityCounts.put(queue, queueRackLocalityCount);
+      counterKey = "variable.queue." + queue + ".locality.off";
+      int queueOffLocalityCount = metrics.getGauges().containsKey(counterKey)?  (int)metrics.getGauges().get(counterKey).getValue() : 0;
+      queueOffLocalityCounts.put(queue,queueOffLocalityCount);
     }
 
     // package results
@@ -449,7 +488,28 @@ public class SLSWebApp extends HttpServlet {
               .append(queueAllocatedMemoryMap.get(queue));
       sb.append(",\"queue.").append(queue).append(".allocated.vcores\":")
               .append(queueAllocatedVCoresMap.get(queue));
+      sb.append(",\"queue.").append(queue).append(".locality.node\":")
+      .append(queueNodeLocalityCounts.get(queue));
+      sb.append(",\"queue.").append(queue).append(".locality.rack\":")
+      .append(queueRackLocalityCounts.get(queue));
+      sb.append(",\"queue.").append(queue).append(".locality.off\":")
+      .append(queueOffLocalityCounts.get(queue));
+      
     }
+    
+    //Nodes containers metrics
+    for (String gaugeKey : metrics.getGauges().keySet()) {
+    	if (gaugeKey.contains("maps")) {
+    		sb.append(",\"" + gaugeKey  + "\"" + ":").append((int)metrics.getGauges().get(gaugeKey).getValue());
+    	}
+    }
+    for (String gaugeKey : metrics.getGauges().keySet()) {
+    	if (gaugeKey.contains("reducers")) {
+    		sb.append(",\"" + gaugeKey  + "\"" + ":").append((int)metrics.getGauges().get(gaugeKey).getValue());
+    	}
+    }
+    
+    
     // scheduler allocate & handle
     sb.append(",\"scheduler.allocate.timecost\":").append(allocateTimecost);
     sb.append(",\"scheduler.handle.timecost\":").append(handleTimecost);

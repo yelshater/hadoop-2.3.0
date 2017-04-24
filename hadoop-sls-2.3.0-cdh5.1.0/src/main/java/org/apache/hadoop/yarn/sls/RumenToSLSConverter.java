@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,8 +43,27 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/***
+ * 
+ * Updated by @author Yehia Elshater
+ * inputrumen=src/main/resources/rumen.json output=src/main/resources/output nodes=src/main/resources/topology.json input-sls=src/main/resources/slsoutput/sls_jobs printsimulation
+ * inputrumen=src/test/resources/wcrumenjob-trace.json output=src/test/resources/wcoutput nodes=src/test/resources/wctopology.json input-sls=src/test/resources/slsoutput/sls_jobs printsimulation
+ * -input src/test/resources/wc/wcrumenjob-trace.json -outputJobs src/test/resources/wc/wc_sls_test.output -outputNodes src/test/resources/wc/sls_wctopology_test.json
+ * -input src/test/resources/tpch/q8/rumen/q8-rumen.json -outputJobs src/test/resources/tpch/q8/slsoutput/q8sls.json -outputNodes src/test/resources/tpch/q8/slsoutput/q8_topology.json
+ */
 public class RumenToSLSConverter {
-  private static final String EOL = System.getProperty("line.separator");
+  public static final String TASK_TASKID = "task.taskid";
+
+  public static final String TASK_ATTEMPTID = "task.attemptid";
+
+  public static final String TASK_JOB_JOBID = "task.job.jobid";
+
+public static final String MAP_PREFERRED_LOCATIONS = "map.preferredLocations";
+
+public static final String CONTAINER_ORIGINAL_LOCALITY = "container.originalLocality";
+public static final String FILE_SPLIT_ID = "fileSplitName";
+
+public static final String EOL = System.getProperty("line.separator");
 
   private static long baseline = 0;
   private static Map<String, Set<String>> rackNodeMap =
@@ -51,6 +71,15 @@ public class RumenToSLSConverter {
 
   public static void main(String args[]) throws Exception {
     Options options = new Options();
+    File f1 = new File ("src/test/resources/wc/wc_sls_test.output");
+    File f2 = new File ("src/test/resources/wc/sls_wctopology_test.json");
+    f1.delete();
+    f2.delete();
+    
+   /* args = new String[3];
+    args[0] = "src/main/resources/rumen.json";
+    args[1] = "src/main/resources/slsoutput/sls_jobs";
+    args[2] = "src/main/resources/slsoutput/sls_nodes";*/
     options.addOption("input", true, "input rumen json file");
     options.addOption("outputJobs", true, "output jobs file");
     options.addOption("outputNodes", true, "output nodes file");
@@ -84,14 +113,16 @@ public class RumenToSLSConverter {
       System.exit(1);
     }
     if (new File(outputJsonFile).exists()) {
-      System.err.println();
-      System.err.println("ERROR: output job file is existing");
-      System.exit(1);
+    	new File(outputJsonFile).delete();
+      //System.err.println();
+      //System.err.println("ERROR: output job file is existing");
+      //System.exit(1);
     }
     if (new File(outputNodeFile).exists()) {
-      System.err.println();
-      System.err.println("ERROR: output node file is existing");
-      System.exit(1);
+      new File(outputNodeFile).delete();
+      //System.err.println();
+      //System.err.println("ERROR: output node file is existing");
+      //System.exit(1);
     }
 
     File jsonFile = new File(outputJsonFile);
@@ -167,6 +198,7 @@ public class RumenToSLSConverter {
     String jobId = rumenJob.get("jobID").toString();
     String queue = rumenJob.get("queue").toString();
     String user = rumenJob.get("user").toString();
+    String jobName = rumenJob.get("jobName").toString();
     if (baseline == 0) {
       baseline = jobStart;
     }
@@ -181,15 +213,17 @@ public class RumenToSLSConverter {
     }
 
     json.put("am.type", "mapreduce");
+    json.put("am.container.node", rumenJob.get("amMasterNode"));
     json.put("job.start.ms", jobStart);
     json.put("job.end.ms", jobFinish);
     json.put("job.queue.name", queue);
+    json.put("job.name", jobName);
     json.put("job.id", jobId);
     json.put("job.user", user);
 
-    List maps = createSLSTasks("map",
+    List maps = createSLSTasks(jobId,"map",
             (List) rumenJob.get("mapTasks"), offset);
-    List reduces = createSLSTasks("reduce",
+    List reduces = createSLSTasks(jobId, "reduce",
             (List) rumenJob.get("reduceTasks"), offset);
     List tasks = new ArrayList();
     tasks.addAll(maps);
@@ -199,8 +233,8 @@ public class RumenToSLSConverter {
   }
 
   @SuppressWarnings("unchecked")
-  private static List createSLSTasks(String taskType,
-                                     List rumenTasks, long offset) {
+  private static List createSLSTasks(String jobId ,
+                                     String taskType, List rumenTasks, long offset) {
     int priority = taskType.equals("reduce") ? 10 : 20;
     List array = new ArrayList();
     for (Object e : rumenTasks) {
@@ -218,6 +252,27 @@ public class RumenToSLSConverter {
         task.put("container.end.ms", taskFinish);
         task.put("container.priority", priority);
         task.put("container.type", taskType);
+        task.put(TASK_TASKID, (String)rumenTask.get("taskID"));
+        task.put(TASK_ATTEMPTID, (String)rumenAttempt.get("attemptID"));
+        task.put(TASK_JOB_JOBID, jobId);
+        task.put(CONTAINER_ORIGINAL_LOCALITY, (String)rumenAttempt.get("originalLocality"));
+        
+        ArrayList<LinkedHashMap> preferredLocations = (ArrayList<LinkedHashMap>)rumenTask.get("preferredLocations");
+        String splitId = (String)rumenTask.get("splitId");
+        task.put("splitId", splitId);
+        
+        if (preferredLocations !=null && preferredLocations.size() > 0) {
+        	task.put(MAP_PREFERRED_LOCATIONS, extractPreferredLocations(preferredLocations));
+        	//setting the input file split name
+        	if (splitId != null && !splitId.trim().isEmpty() ) {
+        		String inputFileName = splitId.substring(0, splitId.lastIndexOf("_"));
+        		//task.put(FILE_SPLIT_ID, rumenAttempt.get(FILE_SPLIT_ID));
+        		task.put(FILE_SPLIT_ID, inputFileName);
+        	}
+        }
+        else {
+        	task.put(FILE_SPLIT_ID, rumenAttempt.get(FILE_SPLIT_ID));
+        }
         array.add(task);
         String rackHost[] = SLSUtils.getRackHostName(hostname);
         if (rackNodeMap.containsKey(rackHost[0])) {
@@ -231,4 +286,25 @@ public class RumenToSLSConverter {
     }
     return array;
   }
+
+  /***
+   * @author Yehia Elshater
+   * @param preferredLocations
+   * @return a hashmap of the preferred hosts and racks of the given map task
+   */
+public static HashMap<String, String> extractPreferredLocations(
+		ArrayList<LinkedHashMap> preferredLocations) {
+	HashMap<String,String> hostsRacks = new HashMap<String, String>();
+	for (LinkedHashMap<String,List<String>> location : preferredLocations) {
+		List<String> preferredLocation = (ArrayList<String>)location.get("layers");
+		//handling the bug of adding "/" to the rackname. Each rackName should start with "/"
+		if (!preferredLocation.get(0).startsWith("/")) {
+			hostsRacks.put(preferredLocation.get(1) , "/" + preferredLocation.get(0));
+		}
+		else {
+			hostsRacks.put(preferredLocation.get(1) , preferredLocation.get(0));
+		}
+	}
+	return hostsRacks;
+}
 }
