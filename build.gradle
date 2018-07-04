@@ -1,0 +1,200 @@
+
+allprojects {
+  task hello << { task -> println "I'm $task.project.name" }
+}
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'maven'
+  apply plugin: 'maven-publish'
+  apply plugin:'application' 
+  project.ext {
+	cdhVersion = '2.3.0-cdh5.1.0'
+	cdhSparkVersion = '1.0.0-cdh5.1.0'
+  }
+repositories {
+    maven {
+        url "https://repository.cloudera.com/artifactory/cloudera-repos/"	
+    }
+	maven {
+        url "https://repository.cloudera.com/artifactory/libs-release-local/"
+    }
+    maven {
+        url "https://repository.cloudera.com/artifactory/repo"
+    }
+    
+    maven {
+        url "http://repo1.maven.org/maven2"
+    }
+	mavenLocal()
+	mavenCentral()	
+  }
+  configurations {
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-server-resourcemanager'
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-server-nodemanager'
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-server-common'
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-api' 
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-mapreduce-client-app' 
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-hdfs' 
+    all*.exclude group:'org.apache.hadoop', module:'hadoop-rumen' 
+    all*.exclude group:'org.eclipse.jetty.orbit' , module: 'javax.servlet'
+    //all*.exclude group:'org.apache.spark', module:'spark-core_2.10'
+
+    
+    //all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-common' 
+  }
+  dependencies {
+	compile group:'junit', name:'junit', version:'4.8.1'
+  }
+}
+
+project(':Hadoop_230') {
+	configurations {
+		all*.exclude group:'org.apache.hadoop', module:'hadoop-yarn-common' 
+	}
+	dependencies {
+	   compile 'com.typesafe:config:1.2.1'
+	}
+}
+
+project(':spark-core_2.10-1.0.0-cdh5.1.0') {
+	dependencies {
+	compile project (':Hadoop_230')
+	compile group: 'org.apache.spark' , name:'spark-core_2.10', version: project.ext.cdhSparkVersion
+	compile group: 'org.apache.spark' , name:'spark-yarn_2.10', version:cdhSparkVersion
+	//compile 'org.apache.spark:spark-yarn_2.10:cdhSparkVersion'
+	//compile 'com.google.guava:guava:11.0.2'
+  }
+}
+
+
+
+project(':spark-client-2.10') {
+	dependencies {
+	compile project (':spark-core_2.10-1.0.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-hdfs-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project (':Hadoop_230')
+		compile group:'commons-daemon', name:'commons-daemon', version: '1.0.13'
+		
+	}
+}
+
+project(':SWIM') {
+	dependencies {
+		compile project (':Hadoop_230')
+		
+	}
+}
+
+
+project(':hadoop-hdfs-2.3.0-cdh5.1.0-test-sources') {
+	dependencies {
+		compile project (':hadoop-hdfs-2.3.0-cdh5.1.0')
+	}
+}
+
+
+project(':hadoop-mapreduce-client-app-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project (':hadoop-yarn-server-nodemanager-2.3.0-cdh5.1.0'), project(':hadoop-yarn-common-2.3.0-cdh5.1.0-local')
+		compile project (':hadoop-yarn-api-2.3.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-mapreduce-client-hs-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project (':hadoop-mapreduce-client-app-2.3.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-mapreduce-simulator') {
+	dependencies {
+		compile project(':Hadoop_230')
+		compile project(':hadoop-yarn-server-resourcemanager-2.3.0-cdh5.1.0')
+		compile project(':hadoop-yarn-server-nodemanager-2.3.0-cdh5.1.0')
+		compile project(':hadoop-mapreduce-client-app-2.3.0-cdh5.1.0')
+		compile project(':hadoop-hdfs-2.3.0-cdh5.1.0') 
+		compile project(':hadoop-hdfs-2.3.0-cdh5.1.0-test-sources')
+		compile project(':hadoop-yarn-server-common-2.3.0-cdh5.1.0')
+		
+	}
+}
+
+
+project(':hadoop-mapreduce-examples-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project(':Hadoop_230')
+		compile project(':hadoop-yarn-server-resourcemanager-2.3.0-cdh5.1.0')
+		compile project(':hadoop-yarn-server-nodemanager-2.3.0-cdh5.1.0')
+		compile project(':hadoop-mapreduce-client-app-2.3.0-cdh5.1.0')
+		compile project(':hadoop-hdfs-2.3.0-cdh5.1.0') 
+		compile project(':hadoop-hdfs-2.3.0-cdh5.1.0-test-sources')
+		compile project(':hadoop-yarn-server-common-2.3.0-cdh5.1.0')
+		
+	}
+}
+
+project(':hadoop-rumen-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project(':Hadoop_230')
+		compile project(':hadoop-mapreduce-client-app-2.3.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-sls-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project(':hadoop-yarn-server-resourcemanager-2.3.0-cdh5.1.0')
+		compile project(':hadoop-rumen-2.3.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-yarn-api-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project(':Hadoop_230')
+	}
+}
+
+project(':hadoop-yarn-common-2.3.0-cdh5.1.0-local') {
+
+	dependencies {
+		compile project (':hadoop-yarn-api-2.3.0-cdh5.1.0')
+		//testCompile group:'junit', name:'junit', version:'4.8.1'
+	}
+}
+
+project(':hadoop-yarn-server-nodemanager-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project (':hadoop-yarn-api-2.3.0-cdh5.1.0')
+		compile project (':hadoop-yarn-common-2.3.0-cdh5.1.0-local')
+		compile project(':hadoop-yarn-server-common-2.3.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-yarn-server-resourcemanager-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project(':hadoop-yarn-common-2.3.0-cdh5.1.0-local') 
+		compile project(':hadoop-yarn-api-2.3.0-cdh5.1.0')
+		compile project(':hadoop-hdfs-2.3.0-cdh5.1.0-test-sources')
+		compile project(':hadoop-yarn-server-common-2.3.0-cdh5.1.0')
+	}
+}
+
+project(':hadoop-yarn-server-common-2.3.0-cdh5.1.0') {
+	dependencies {
+		compile project (':Hadoop_230')
+		compile project (':hadoop-yarn-api-2.3.0-cdh5.1.0')
+		compile project (':hadoop-yarn-common-2.3.0-cdh5.1.0-local')
+	}
+}
+
+/*project(':JettyTutorial') {
+	dependencies {
+		compile project(':Hadoop_230')
+	}
+}*/
+
