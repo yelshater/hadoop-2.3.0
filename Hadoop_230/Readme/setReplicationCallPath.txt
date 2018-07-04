@@ -1,0 +1,132 @@
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+dfs.block.replicator.classname 
+dfs.datanode.fsdataset.volume.choosing.policy
+DFSConfigKeys.DFS_HEARTBEAT_INTERVAL_KEY
+
+HADOOP_USER_NAME
+
+public static final String  DFS_NAMENODE_REPLICATION_MIN_KEY = "dfs.namenode.replication.min";
+
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+
+
+DFSClient --> ClientProtocol --> ClientNamenodeProtocolServerSideTranslatorPB --> NameNodeRpcServer --> FSNamesystem namesystem --> BlockManager
+
+
+
+org.apache.hadoop.fs.shell.SetReplication: for shell command
+

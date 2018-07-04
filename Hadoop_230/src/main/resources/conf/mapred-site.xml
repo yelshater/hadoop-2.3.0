@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>yarn.app.mapreduce.am.command-opts</name>
+    <value>-Xmx1024m -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=n,suspend=n </value>
+  </property>
+</configuration>

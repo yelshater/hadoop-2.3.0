@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>dfs.namenode.servicerpcaddress</name>
+    <value>localhost:8022</value>
+  </property>
+  <property>
+    <name>dfs.https.address</name>
+    <value>localhost:50470</value>
+  </property>
+  <property>
+    <name>dfs.https.port</name>
+    <value>50470</value>
+  </property>
+  <property>
+    <name>dfs.namenode.httpaddress</name>
+    <value>localhost:50070</value>
+  </property>
+  <property>
+    <name>dfs.replication</name>
+    <value>2</value>
+  </property>
+  <property>
+    <name>dfs.blocksize</name>
+    <value>1024</value>
+  </property>
+  <property>
+    <name>dfs.client.use.datanode.hostname</name>
+    <value>false</value>
+  </property>
+  
+  
+  
+  <property>
+    <name>fs.permissions.umaskmode</name>
+    <value>022</value>
+  </property>
+  <property>
+    <name>dfs.client.read.shortcircuit</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>dfs.domain.socket.path</name>
+    <value>/var/run/hdfssockets/dn</value>
+  </property>
+  <property>
+    <name>dfs.client.read.shortcircuit.skip.checksum</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>dfs.client.domain.socket.data.traffic</name>
+    <value>false</value>
+  </property>
+  <property>
+    <name>dfs.datanode.hdfsblocksmetadata.enabled</name>
+    <value>true</value>
+  </property>
+</configuration>

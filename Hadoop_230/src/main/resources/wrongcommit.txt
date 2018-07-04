@@ -1,0 +1,1 @@
+https://bitbucket.org/yrabei/research/commits/592d12a9853d640eff8dc47c69c1f78ffe385823#chg-Hadoop_230/src/main/resources/conf/core-site.xml

@@ -1,0 +1,1653 @@
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 0,
+  "job.end.ms" : 87151,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0012",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack3/slave15",
+    "container.start.ms" : 24673,
+    "container.end.ms" : 50585,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_1",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave15" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 24684,
+    "container.end.ms" : 52648,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000001",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000001_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_2",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave15" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave5",
+    "container.start.ms" : 24696,
+    "container.end.ms" : 55246,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000002",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000002_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_3",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave4" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 24674,
+    "container.end.ms" : 45950,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000003",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000003_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_4",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 24685,
+    "container.end.ms" : 55268,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000004",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000004_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_5",
+    "map.preferredLocations" : {
+      "slave1" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 24684,
+    "container.end.ms" : 55273,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000005",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000005_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_6",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave4",
+    "container.start.ms" : 24695,
+    "container.end.ms" : 47160,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000006",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000006_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_7",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave11",
+    "container.start.ms" : 24688,
+    "container.end.ms" : 48286,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000007",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000007_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_8",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave15" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave14",
+    "container.start.ms" : 28705,
+    "container.end.ms" : 51640,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000008",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000008_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_9",
+    "map.preferredLocations" : {
+      "slave8" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 24687,
+    "container.end.ms" : 55421,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000009",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000009_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_10",
+    "map.preferredLocations" : {
+      "slave11" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 24686,
+    "container.end.ms" : 54527,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000010",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000010_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_11",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave4" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 24649,
+    "container.end.ms" : 45559,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000011",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000011_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_12",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave12",
+    "container.start.ms" : 28798,
+    "container.end.ms" : 49979,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000012",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000012_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_13",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave6",
+    "container.start.ms" : 24687,
+    "container.end.ms" : 49185,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000013",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000013_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_14",
+    "map.preferredLocations" : {
+      "slave8" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave15",
+    "container.start.ms" : 24688,
+    "container.end.ms" : 50429,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000014",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000014_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_15",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 28886,
+    "container.end.ms" : 48873,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000015",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000015_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_16",
+    "map.preferredLocations" : {
+      "slave1" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave14",
+    "container.start.ms" : 29871,
+    "container.end.ms" : 52295,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000016",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000016_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_17",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 30885,
+    "container.end.ms" : 51300,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000017",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000017_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_18",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 24667,
+    "container.end.ms" : 45060,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000018",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000018_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_19",
+    "map.preferredLocations" : {
+      "slave8" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave9",
+    "container.start.ms" : 24697,
+    "container.end.ms" : 42818,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000019",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000019_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_20",
+    "map.preferredLocations" : {
+      "slave11" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave3",
+    "container.start.ms" : 24722,
+    "container.end.ms" : 52024,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000020",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000020_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_21",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 24682,
+    "container.end.ms" : 53771,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000021",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000021_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_22",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave4",
+    "container.start.ms" : 24712,
+    "container.end.ms" : 47854,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000022",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000022_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_23",
+    "map.preferredLocations" : {
+      "slave11" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 37937,
+    "container.end.ms" : 64090,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000023",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000023_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_24",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 45982,
+    "container.end.ms" : 66382,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000024",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000024_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_25",
+    "map.preferredLocations" : {
+      "slave8" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave9",
+    "container.start.ms" : 24685,
+    "container.end.ms" : 42507,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000025",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000025_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_26",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave4" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave13",
+    "container.start.ms" : 28750,
+    "container.end.ms" : 56011,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000026",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000026_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_27",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 47017,
+    "container.end.ms" : 69878,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000027",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000027_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_28",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave4" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave11",
+    "container.start.ms" : 24711,
+    "container.end.ms" : 47499,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000028",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000028_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_29",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave4" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave4",
+    "container.start.ms" : 48003,
+    "container.end.ms" : 66487,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000029",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000029_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_30",
+    "map.preferredLocations" : {
+      "slave1" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave13",
+    "container.start.ms" : 29903,
+    "container.end.ms" : 53977,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000030",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000030_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_31",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 53114,
+    "container.end.ms" : 73522,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000031",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000031_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_32",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave3" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 46994,
+    "container.end.ms" : 67878,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000032",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000032_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_33",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave9",
+    "container.start.ms" : 42952,
+    "container.end.ms" : 59382,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000033",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000033_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_34",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave15" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave6",
+    "container.start.ms" : 53093,
+    "container.end.ms" : 74912,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000034",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000034_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_35",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave12",
+    "container.start.ms" : 53094,
+    "container.end.ms" : 70932,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000035",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000035_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_36",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave9",
+    "container.start.ms" : 43971,
+    "container.end.ms" : 60892,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000036",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000036_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_37",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave13" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave3",
+    "container.start.ms" : 24699,
+    "container.end.ms" : 51570,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000037",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000037_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_38",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave11",
+    "container.start.ms" : 49014,
+    "container.end.ms" : 70500,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000038",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000038_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_39",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave5" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave11",
+    "container.start.ms" : 50024,
+    "container.end.ms" : 71595,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000039",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000039_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_40",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave5" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack3/slave15",
+    "container.start.ms" : 53096,
+    "container.end.ms" : 69360,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000040",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000040_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_41",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave15" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave3",
+    "container.start.ms" : 53057,
+    "container.end.ms" : 71252,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000041",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000041_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_42",
+    "map.preferredLocations" : {
+      "slave8" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack1/slave5",
+    "container.start.ms" : 24683,
+    "container.end.ms" : 55080,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000042",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000042_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_43",
+    "map.preferredLocations" : {
+      "slave8" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave14",
+    "container.start.ms" : 53095,
+    "container.end.ms" : 70566,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000043",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000043_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_44",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave6",
+    "container.start.ms" : 24686,
+    "container.end.ms" : 50169,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000044",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000044_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_45",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave5" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 53095,
+    "container.end.ms" : 73299,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000045",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000045_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_46",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave4",
+    "container.start.ms" : 53114,
+    "container.end.ms" : 70582,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000046",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000046_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_47",
+    "map.preferredLocations" : {
+      "slave1" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack2/slave6",
+    "container.start.ms" : 53113,
+    "container.end.ms" : 67337,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0012_m_000047",
+    "task.attemptid" : "attempt_1420324400897_0012_m_000047_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem_48",
+    "map.preferredLocations" : {
+      "slave12" : "/rack4",
+      "slave5" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/lineitem"
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 81197,
+    "container.end.ms" : 87000,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0012_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0012_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 81198,
+    "container.end.ms" : 86267,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0012_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0012_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 81204,
+    "container.end.ms" : 86578,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0012_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0012_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 81203,
+    "container.end.ms" : 86486,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0012_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0012_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 81210,
+    "container.end.ms" : 86564,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0012_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0012_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0012",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave10",
+  "job.start.ms" : 488,
+  "job.end.ms" : 30000,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0013",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 23665,
+    "container.end.ms" : 29711,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0013_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0013_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0013",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/nation_1",
+    "map.preferredLocations" : {
+      "slave2" : "/rack2",
+      "slave3" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/nation"
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 95395,
+  "job.end.ms" : 171083,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0014",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 118943,
+    "container.end.ms" : 142842,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_1",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave2" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 118952,
+    "container.end.ms" : 136541,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000001",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000001_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_2",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave16" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack2/slave4",
+    "container.start.ms" : 118939,
+    "container.end.ms" : 140191,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000002",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000002_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_3",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave7" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack3/slave11",
+    "container.start.ms" : 118944,
+    "container.end.ms" : 140919,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000003",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000003_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_4",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave7" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack1/slave3",
+    "container.start.ms" : 118978,
+    "container.end.ms" : 142335,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000004",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000004_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_5",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave13" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack3/slave15",
+    "container.start.ms" : 118946,
+    "container.end.ms" : 136997,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000005",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000005_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_6",
+    "map.preferredLocations" : {
+      "slave11" : "/rack3",
+      "slave7" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 118962,
+    "container.end.ms" : 143244,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000006",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000006_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_7",
+    "map.preferredLocations" : {
+      "slave11" : "/rack3",
+      "slave7" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack2/slave6",
+    "container.start.ms" : 118930,
+    "container.end.ms" : 137873,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000007",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000007_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_8",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave14" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack1/slave3",
+    "container.start.ms" : 118945,
+    "container.end.ms" : 142966,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000008",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000008_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_9",
+    "map.preferredLocations" : {
+      "slave9" : "/rack3",
+      "slave7" : "/rack1"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 118942,
+    "container.end.ms" : 137124,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000009",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000009_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_10",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave13" : "/rack3"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack3/slave11",
+    "container.start.ms" : 118950,
+    "container.end.ms" : 133144,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000010",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000010_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_11",
+    "map.preferredLocations" : {
+      "slave7" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245"
+  }, {
+    "container.host" : "/rack2/slave4",
+    "container.start.ms" : 118947,
+    "container.end.ms" : 127338,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0014_m_000011",
+    "task.attemptid" : "attempt_1420324400897_0014_m_000011_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-1742290245_12",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 154981,
+    "container.end.ms" : 170895,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0014_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0014_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 154967,
+    "container.end.ms" : 159739,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0014_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0014_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 154971,
+    "container.end.ms" : 160413,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0014_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0014_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 154982,
+    "container.end.ms" : 160520,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0014_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0014_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 154984,
+    "container.end.ms" : 160474,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0014_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0014_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0014",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 180480,
+  "job.end.ms" : 238592,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0015",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 203936,
+    "container.end.ms" : 220373,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0015_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0015_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/customer_1",
+    "map.preferredLocations" : {
+      "slave3" : "/rack1",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/customer"
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 203931,
+    "container.end.ms" : 215125,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0015_m_000001",
+    "task.attemptid" : "attempt_1420324400897_0015_m_000001_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "RACK_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/customer_2",
+    "map.preferredLocations" : {
+      "slave3" : "/rack1",
+      "slave12" : "/rack4"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/customer"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 203935,
+    "container.end.ms" : 209235,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0015_m_000002",
+    "task.attemptid" : "attempt_1420324400897_0015_m_000002_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/user/hive/warehouse/tpch4g.db/customer_3",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 232117,
+    "container.end.ms" : 238424,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0015_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0015_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 232136,
+    "container.end.ms" : 237149,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0015_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0015_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 232130,
+    "container.end.ms" : 237629,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0015_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0015_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 232138,
+    "container.end.ms" : 237227,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0015_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0015_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 232123,
+    "container.end.ms" : 237507,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0015_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0015_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0015",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 245270,
+  "job.end.ms" : 291824,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0016",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 268814,
+    "container.end.ms" : 274022,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0016_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0016_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp1359996392_1",
+    "map.preferredLocations" : {
+      "slave5" : "/rack1",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp1359996392"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 268808,
+    "container.end.ms" : 273940,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0016_m_000001",
+    "task.attemptid" : "attempt_1420324400897_0016_m_000001_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp1359996392_2",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 286006,
+    "container.end.ms" : 291168,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0016_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0016_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 286011,
+    "container.end.ms" : 290775,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0016_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0016_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 286010,
+    "container.end.ms" : 291493,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0016_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0016_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 286029,
+    "container.end.ms" : 291228,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0016_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0016_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 286015,
+    "container.end.ms" : 291632,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0016_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0016_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0016",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 299840,
+  "job.end.ms" : 346408,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0017",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 323333,
+    "container.end.ms" : 328787,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0017_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0017_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "NODE_LOCAL",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-79540538_1",
+    "map.preferredLocations" : {
+      "slave10" : "/rack4",
+      "slave6" : "/rack2"
+    },
+    "fileSplitName" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-79540538"
+  }, {
+    "container.host" : "/rack4/slave16",
+    "container.start.ms" : 323345,
+    "container.end.ms" : 328789,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0017_m_000001",
+    "task.attemptid" : "attempt_1420324400897_0017_m_000001_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-79540538_2",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 340374,
+    "container.end.ms" : 345786,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0017_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0017_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 340390,
+    "container.end.ms" : 345505,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0017_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0017_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 340392,
+    "container.end.ms" : 346220,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0017_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0017_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 340380,
+    "container.end.ms" : 345937,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0017_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0017_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 340393,
+    "container.end.ms" : 346203,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0017_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0017_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0017",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 354402,
+  "job.end.ms" : 410547,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0018",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 386833,
+    "container.end.ms" : 392183,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0018_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0018_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0018",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-563276465_1",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 404033,
+    "container.end.ms" : 408973,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0018_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0018_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0018",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 404048,
+    "container.end.ms" : 409099,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0018_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0018_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0018",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 404061,
+    "container.end.ms" : 409836,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0018_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0018_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0018",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 404068,
+    "container.end.ms" : 410396,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0018_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0018_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0018",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 404063,
+    "container.end.ms" : 409627,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0018_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0018_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0018",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 419282,
+  "job.end.ms" : 473265,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0019",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 451485,
+    "container.end.ms" : 456594,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0019_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0019_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0019",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-216062778_1",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 468324,
+    "container.end.ms" : 473120,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0019_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0019_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0019",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}
+{
+  "am.type" : "mapreduce",
+  "am.container.node" : "slave12",
+  "job.start.ms" : 484169,
+  "job.end.ms" : 540227,
+  "job.queue.name" : "default",
+  "job.name" : "PigLatin:Q7",
+  "job.id" : "job_1420324400897_0020",
+  "job.user" : "yehia",
+  "job.tasks" : [ {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 516643,
+    "container.end.ms" : 522113,
+    "container.priority" : 20,
+    "container.type" : "map",
+    "task.taskid" : "task_1420324400897_0020_m_000000",
+    "task.attemptid" : "attempt_1420324400897_0020_m_000000_0",
+    "task.job.jobid" : "job_1420324400897_0020",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : "hdfs://master.cdh.queens:8020/tmp/temp-898707015/tmp-216062778_1",
+    "fileSplitName" : "",
+    "map.preferredLocations" : {
+    }
+  }, {
+    "container.host" : "/rack4/slave10",
+    "container.start.ms" : 533655,
+    "container.end.ms" : 538475,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0020_r_000000",
+    "task.attemptid" : "attempt_1420324400897_0020_r_000000_0",
+    "task.job.jobid" : "job_1420324400897_0020",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave7",
+    "container.start.ms" : 533656,
+    "container.end.ms" : 538457,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0020_r_000001",
+    "task.attemptid" : "attempt_1420324400897_0020_r_000001_0",
+    "task.job.jobid" : "job_1420324400897_0020",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack1/slave1",
+    "container.start.ms" : 533657,
+    "container.end.ms" : 540002,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0020_r_000002",
+    "task.attemptid" : "attempt_1420324400897_0020_r_000002_0",
+    "task.job.jobid" : "job_1420324400897_0020",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave8",
+    "container.start.ms" : 533658,
+    "container.end.ms" : 539108,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0020_r_000003",
+    "task.attemptid" : "attempt_1420324400897_0020_r_000003_0",
+    "task.job.jobid" : "job_1420324400897_0020",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  }, {
+    "container.host" : "/rack2/slave2",
+    "container.start.ms" : 533665,
+    "container.end.ms" : 539155,
+    "container.priority" : 10,
+    "container.type" : "reduce",
+    "task.taskid" : "task_1420324400897_0020_r_000004",
+    "task.attemptid" : "attempt_1420324400897_0020_r_000004_0",
+    "task.job.jobid" : "job_1420324400897_0020",
+    "container.originalLocality" : "OFF_SWITCH",
+    "splitId" : null,
+    "fileSplitName" : ""
+  } ]
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://localhost:8020</value>
+  </property>
+  <property>
+    <name>fs.trash.interval</name>
+    <value>1</value>
+  
+  </property>
+    <property>
+    <name>net.topology.script.file.name</name>
+    <value>topology.py</value>
+  </property>
+  
+  <property>
+	  <name>net.topology.impl</name>
+	  <value>org.apache.hadoop.net.NetworkTopology</value>
+	  <description> The default implementation of NetworkTopology which is classic three layer one.
+	  </description>
+  </property>
+  
+  <property>
+    <name>io.compression.codecs</name>
+    <value>org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.DeflateCodec,org.apache.hadoop.io.compress.SnappyCodec,org.apache.hadoop.io.compress.Lz4Codec</value>
+  </property>
+  <property>
+    <name>io.file.buffer.size</name>
+    <value>65536</value>
+  </property>
+  <property>
+    <name>hadoop.security.authentication</name>
+    <value>simple</value>
+  </property>
+  <property>
+    <name>hadoop.rpc.protection</name>
+    <value>authentication</value>
+  </property>
+  <property>
+    <name>hadoop.security.auth_to_local</name>
+    <value>DEFAULT</value>
+  </property>
+  <property>  
+        <name>hadoop.security.authorization</name>  
+        <value>false</value>  
+        <description>Enable authorization for different protocols.  
+        </description> 
+</property>  
+</configuration>

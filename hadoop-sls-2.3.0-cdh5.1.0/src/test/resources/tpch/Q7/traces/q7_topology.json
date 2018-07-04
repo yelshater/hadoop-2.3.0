@@ -1,0 +1,64 @@
+{
+  "name" : "<root>",
+  "children" : [ {
+    "name" : "rack2",
+    "children" : [ {
+      "name" : "slave8",
+      "children" : null
+    }, {
+      "name" : "slave2",
+      "children" : null
+    }, {
+      "name" : "slave4",
+      "children" : null
+    }, {
+      "name" : "slave6",
+      "children" : null
+    } ]
+  }, {
+    "name" : "rack1",
+    "children" : [ {
+      "name" : "slave7",
+      "children" : null
+    }, {
+      "name" : "slave1",
+      "children" : null
+    }, {
+      "name" : "slave3",
+      "children" : null
+    }, {
+      "name" : "slave5",
+      "children" : null
+    } ]
+  }, {
+    "name" : "rack4",
+    "children" : [ {
+      "name" : "slave10",
+      "children" : null
+    }, {
+      "name" : "slave16",
+      "children" : null
+    }, {
+      "name" : "slave12",
+      "children" : null
+    }, {
+      "name" : "slave14",
+      "children" : null
+    } ]
+  }, {
+    "name" : "rack3",
+    "children" : [ {
+      "name" : "slave11",
+      "children" : null
+    }, {
+      "name" : "slave9",
+      "children" : null
+    }, {
+      "name" : "slave13",
+      "children" : null
+    }, {
+      "name" : "slave15",
+      "children" : null
+    } ]
+  } ]
+}

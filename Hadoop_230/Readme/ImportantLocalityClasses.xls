@@ -1,0 +1,101 @@
+-Class Name,,
+-DFSClient,public BlockStorageLocation[] getBlockStorageLocations,"/**
+-   * Get block location information about a list of {@link HdfsBlockLocation}.
+-   * Used by {@link DistributedFileSystem#getFileBlockStorageLocations(List)} to
+-   * get {@link BlockStorageLocation}s for blocks returned by
+-   * {@link DistributedFileSystem#getFileBlockLocations(org.apache.hadoop.fs.FileStatus, long, long)}
+-   * .
+-   * 
+-   * This is done by making a round of RPCs to the associated datanodes, asking
+-   * the volume of each block replica. The returned array of
+-   * {@link BlockStorageLocation} expose this information as a
+-   * {@link VolumeId}.
+-   * 
+-   * @param blockLocations
+-   *          target blocks on which to query volume location information
+-   * @return volumeBlockLocations original block array augmented with additional
+-   *         volume location information for each replica.
+-   */"
+-DFSClient,"public BlockLocation[] getBlockLocations(String src, long start, 
+-    long length)"," /**
+-   * Get block location info about file
+-   * 
+-   * getBlockLocations() returns a list of hostnames that store 
+-   * data for a specific file region.  It returns a set of hostnames
+-   * for every block within the indicated region.
+-   *
+-   * This function is very useful when writing code that considers
+-   * data-placement when performing operations.  For example, the
+-   * MapReduce system tries to schedule tasks on the same machines
+-   * as the data-block the task processes. 
+-   */"
+-FileContext,"public boolean setReplication(final Path f, final short replication)","/**
+-   * Set replication for an existing file.
+-   * 
+-   * @param f file name
+-   * @param replication new replication
+-   *
+-   * @return true if successful
+-   *
+-   * @throws AccessControlException If access is denied
+-   * @throws FileNotFoundException If file <code>f</code> does not exist
+-   * @throws IOException If an I/O error occurred
+-   * 
+-   * Exceptions applicable to file systems accessed over RPC:
+-   * @throws RpcClientException If an exception occurred in the RPC client
+-   * @throws RpcServerException If an exception occurred in the RPC server
+-   * @throws UnexpectedServerException If server implementation throws 
+-   *           undeclared exception to RPC server
+-   */"
+-FileContext,public RemoteIterator<FileStatus> listStatus(final Path f) throws,"/**
+-   * List the statuses of the files/directories in the given path if the path is
+-   * a directory.
+-   * 
+-   * @param f is the path
+-   *
+-   * @return an iterator that traverses statuses of the files/directories 
+-   *         in the given path
+-   *
+-   * @throws AccessControlException If access is denied
+-   * @throws FileNotFoundException If <code>f</code> does not exist
+-   * @throws UnsupportedFileSystemException If file system for <code>f</code> is
+-   *           not supported
+-   * @throws IOException If an I/O error occurred
+-   * 
+-   * Exceptions applicable to file systems accessed over RPC:
+-   * @throws RpcClientException If an exception occurred in the RPC client
+-   * @throws RpcServerException If an exception occurred in the RPC server
+-   * @throws UnexpectedServerException If server implementation throws 
+-   *           undeclared exception to RPC server
+-   */"
+-FileContext, public RemoteIterator<LocatedFileStatus> listLocatedStatus(,"/**
+-   * List the statuses of the files/directories in the given path if the path is
+-   * a directory. 
+-   * Return the file's status and block locations If the path is a file.
+-   * 
+-   * If a returned status is a file, it contains the file's block locations.
+-   * 
+-   * @param f is the path
+-   *
+-   * @return an iterator that traverses statuses of the files/directories 
+-   *         in the given path
+-   * If any IO exception (for example the input directory gets deleted while
+-   * listing is being executed), next() or hasNext() of the returned iterator
+-   * may throw a RuntimeException with the io exception as the cause.
+-   *
+-   * @throws AccessControlException If access is denied
+-   * @throws FileNotFoundException If <code>f</code> does not exist
+-   * @throws UnsupportedFileSystemException If file system for <code>f</code> is
+-   *           not supported
+-   * @throws IOException If an I/O error occurred
+-   * 
+-   * Exceptions applicable to file systems accessed over RPC:
+Add a comment to this line
+-   * @throws RpcClientException If an exception occurred in the RPC client
+-   * @throws RpcServerException If an exception occurred in the RPC server
+-   * @throws UnexpectedServerException If server implementation throws 
+-   *           undeclared exception to RPC server
+-   */"
+-LocatedBlock,,
+-NamenodeFsck,,
+-HdfsBlocksMetadata,,
