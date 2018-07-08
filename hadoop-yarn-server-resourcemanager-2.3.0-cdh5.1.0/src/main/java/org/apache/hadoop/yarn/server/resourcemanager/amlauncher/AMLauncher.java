@@ -187,11 +187,24 @@ public class AMLauncher implements Runnable {
     // Construct the actual Container
     ContainerLaunchContext container = 
         applicationMasterContext.getAMContainerSpec();
-    LOG.info("Command to launch container "
+    /* start debugging*/
+ /*   String splitValue = "\\$JAVA_HOME/bin/java";
+    String firstCommand = container.getCommands().get(0);
+    String [] splitCommand = firstCommand.split(splitValue);
+    firstCommand = "$JAVA_HOME/bin/java" + " -agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=n,suspend=y" + splitCommand[1];
+    container.getCommands().set(0, firstCommand);*/
+    /****end debugging***/
+    //firstCommand = "$JAVA_HOME/bin/java " + " -Xdebug '-Xrunjdwp:transport=dt_socket,address=localhost:8888,server=n,suspend=n' " + splitCommand[1];
+    
+    //container.getCommands().add(0, "export JAVA_HOME=/usr/local/java/jdk1.7.0_55/");
+    System.out.println(StringUtils.arrayToString(container.getCommands().toArray(
+            new String[0])));
+    LOG.error("Command to launch container "
         + containerID
         + " : "
         + StringUtils.arrayToString(container.getCommands().toArray(
             new String[0])));
+    
     
     // Finalize the container
     setupTokens(container, containerID);
@@ -216,7 +229,6 @@ public class AMLauncher implements Runnable {
     environment.put(ApplicationConstants.MAX_APP_ATTEMPTS_ENV,
         String.valueOf(rmContext.getRMApps().get(
             applicationId).getMaxAppAttempts()));
-
     Credentials credentials = new Credentials();
     DataInputByteBuffer dibb = new DataInputByteBuffer();
     if (container.getTokens() != null) {

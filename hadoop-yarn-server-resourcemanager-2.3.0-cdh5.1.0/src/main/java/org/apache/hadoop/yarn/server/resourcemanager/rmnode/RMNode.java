@@ -113,6 +113,14 @@ public interface RMNode {
    */
   public ResourceOption getResourceOption();
   
+  
+  /***
+   * Added by @author yehiaelshater to resolve issue #32
+   * This is for YLocSim only
+   * @param rackName
+   */
+  public void setRackName(String rackName) ;
+  
   /**
    * The rack name for this node manager.
    * @return the rack name.

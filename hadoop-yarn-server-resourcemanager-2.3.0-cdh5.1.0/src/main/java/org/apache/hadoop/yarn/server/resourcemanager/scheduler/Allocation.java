@@ -18,14 +18,18 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerId;
 import org.apache.hadoop.yarn.api.records.NMToken;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.ResourceRequest;
+
 
 public class Allocation {
   
@@ -35,6 +39,10 @@ public class Allocation {
   final Set<ContainerId> fungibleContainers;
   final List<ResourceRequest> fungibleResources;
   final List<NMToken> nmTokens;
+  /***
+   * Added to broadcast the new blocks that have been replicated
+   */
+  private HashMap<String, HashSet<String>> newBlocks ;
 
   public Allocation(List<Container> containers, Resource resourceLimit,
       Set<ContainerId> strictContainers, Set<ContainerId> fungibleContainers,
@@ -52,7 +60,9 @@ public class Allocation {
     this.fungibleContainers = fungibleContainers;
     this.fungibleResources = fungibleResources;
     this.nmTokens = nmTokens;
+    newBlocks = new HashMap<String, HashSet<String>>();
   }
+  
 
   public List<Container> getContainers() {
     return containers;
@@ -77,5 +87,34 @@ public class Allocation {
   public List<NMToken> getNMTokens() {
     return nmTokens;
   }
+
+  /***
+   * 
+   * @author Yehia Elshater
+   * @return List of the new blocks that have been replicated.
+   */
+  public HashMap<String,HashSet<String>> getNewBlocks() {
+	return newBlocks;
+  }
+  
+  public void addNewBlock (String splitId, String nodeId) {
+	  if (splitId!=null && !splitId.isEmpty())
+		  if (nodeId!=null && !nodeId.isEmpty()) {
+			  HashSet<String> newNodes = null;
+			  if (newBlocks.containsKey(splitId)) {
+				  newNodes = newBlocks.get(splitId);
+			  }
+			  else {
+				  newNodes = new HashSet<String>();
+			  }
+			  newNodes.add(nodeId);
+			  newBlocks.put(splitId, newNodes);
+		  }
+  }
+  
+  public void setNewBLocks(HashMap<String, HashSet<String>> newBlocks) {
+	  this.newBlocks = newBlocks;
+  }
+  
 
 }

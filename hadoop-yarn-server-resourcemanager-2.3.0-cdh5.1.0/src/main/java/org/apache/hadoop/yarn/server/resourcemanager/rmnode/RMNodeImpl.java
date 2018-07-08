@@ -99,6 +99,10 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
   private String healthReport;
   private long lastHealthReportTime;
   private String nodeManagerVersion;
+  
+  //added by @author Yehia Elshater for issue #32
+  private String rackName ;
+  
 
   /* set of containers that have just launched */
   private final Map<ContainerId, ContainerStatus> justLaunchedContainers = 
@@ -249,8 +253,21 @@ public class RMNodeImpl implements RMNode, EventHandler<RMNodeEvent> {
     return this.resourceOption;
   }
 
+  /***
+   * @author Yehia Elshater
+   * This method added to resolve issue #32
+   * Used only for YLocSim
+   * 
+   * @param rackName
+   */
+  @Override
+  public void setRackName (String rackName) {
+	  this.rackName = rackName;
+  }
   @Override
   public String getRackName() {
+	if (rackName != null && !rackName.isEmpty()) //added to resolve issue #32
+		return rackName;
     return node.getNetworkLocation();
   }
   

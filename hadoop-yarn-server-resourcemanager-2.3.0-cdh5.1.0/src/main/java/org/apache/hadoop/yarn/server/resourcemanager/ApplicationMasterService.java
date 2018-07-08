@@ -517,6 +517,14 @@ public class ApplicationMasterService extends AbstractService implements
       // add preemption to the allocateResponse message (if any)
       allocateResponse
           .setPreemptionMessage(generatePreemptionMessage(allocation));
+      
+      /****
+       * @author Yehia Elshater
+       * Adding the new replica to the ApplicationResponse to 
+       * be broadcasted to all AMs.
+       */
+      
+      allocateResponse.setNewBlocks(allocation.getNewBlocks());
 
       /*
        * As we are updating the response inside the lock object so we don't
