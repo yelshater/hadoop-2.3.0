@@ -1,0 +1,39 @@
+Class: ResourceTrackerService
+public NodeHeartbeatResponse nodeHeartbeat(NodeHeartbeatRequest request)
+
+----------------------------------
+
+Class: AppSchedulable. This class have FairScheduler Delay Scheduling logic
+Method: assignContainer
+
+
+
+-----------------------------------
+
+Class:  ApplicationMasterService.java
+Method: public AllocateResponse allocate(AllocateRequest request)
+AllocateRequest: is the core request sent by the ApplicationMaster to the ResourceManager to obtain resources in the cluster.
+AllocateResponse: is the response sent by the ResourceManager the ApplicationMaster during resource negotiation.
+
+
+
+---------
+
+Class: FSSchedulerApp
+Method: public synchronized NodeType getAllowedLocalityLevelByTime(Priority priority,
+          long nodeLocalityDelayMs, long rackLocalityDelayMs,
+          long currentTimeMs) : This method is doing the main logic of the FairScheduler of waiting T1 and T2 unit times. This is a helper function used by AppSchedulable
+          Namely, the following control is the heart of the scheduler:
+          
+          if (waitTime > thresholdTime) {
+     		 if (allowed.equals(NodeType.NODE_LOCAL)) {
+        	  	allowedLocalityLevel.put(priority, NodeType.RACK_LOCAL);
+        	  	// Already waited T1 time units
+        		resetSchedulingOpportunities(priority, currentTimeMs);
+      		} else if (allowed.equals(NodeType.RACK_LOCAL)) {
+        		allowedLocalityLevel.put(priority, NodeType.OFF_SWITCH);
+        		//Already waited T2 Time units
+        		resetSchedulingOpportunities(priority, currentTimeMs);
+      		}
+    	}
+      

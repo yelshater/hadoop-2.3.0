@@ -1,0 +1,4 @@
+dependencies {
+    compile group:'org.apache.zookeeper', name:'zookeeper', version: '3.4.5-cdh5.1.0' , classifier: 'tests'
+	compile group:'org.apache.hadoop', name:'hadoop-yarn-common', version: project.ext.cdhVersion, classifier: 'tests'
+}
